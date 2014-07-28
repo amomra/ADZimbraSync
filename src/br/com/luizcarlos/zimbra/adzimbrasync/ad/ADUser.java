@@ -3,16 +3,34 @@ package br.com.luizcarlos.zimbra.adzimbrasync.ad;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPAttribute;
+import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPEntry;
+
+@LDAPEntry( uidAttribute = "objectGUID")
 public class ADUser {
 
+	@LDAPAttribute
 	private UUID objectGUID;
+	
+	@LDAPAttribute
 	private String sAMAccountName;
+	
+	@LDAPAttribute
 	private String givenName;
+	
+	@LDAPAttribute
 	private String name;
+	
+	@LDAPAttribute
 	private String sn;
+	
+	@LDAPAttribute
 	private String userPrincipalName;
+	
+	@LDAPAttribute
 	private String mail;
 	
+	@LDAPAttribute( name = "memberOf" )
 	private List<ADGroup> memberOfGroups;
 	
 	public ADUser() {
