@@ -6,9 +6,11 @@ import java.util.UUID;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPEntry;
 
-@LDAPEntry( uidAttribute = "objectGUID")
-public class ADGroup {
+public class ADGroup extends LDAPEntry {
 
+	@LDAPAttribute
+	private String distinguishedName;
+	
 	@LDAPAttribute
 	private UUID objectGUID;
 	
@@ -19,10 +21,17 @@ public class ADGroup {
 	private String mail;
 	
 	@LDAPAttribute( name = "member" )
-	private List<ADUser> members;
+	private List<String> members;
 	
 	public ADGroup() {
-		
+	}
+
+	public String getDistinguishedName() {
+		return distinguishedName;
+	}
+
+	public void setDistinguishedName(String distinguishedName) {
+		this.distinguishedName = distinguishedName;
 	}
 
 	public UUID getObjectGUID() {
@@ -49,8 +58,11 @@ public class ADGroup {
 		this.mail = mail;
 	}
 
-	public List<ADUser> getMembers() {
+	public List<String> getMembers() {
 		return members;
 	}
 
+	public void setMembers(List<String> members) {
+		this.members = members;
+	}
 }
