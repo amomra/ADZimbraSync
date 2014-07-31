@@ -1,40 +1,41 @@
 package br.com.luizcarlos.zimbra.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map.Entry;
 
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchResult;
+import com.unboundid.ldap.sdk.Attribute;
+import com.unboundid.ldap.sdk.SearchResultEntry;
 
 public class LDAPConverter {
 
-	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResult entry)
-			throws InstantiationException, IllegalAccessException, IllegalArgumentException, NamingException {
+	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResultEntry entry) throws Exception {
 		// cria uma instância do objeto
 		ObjectType obj = objType.newInstance();
-
-		// pega os atributos do objeto do LDAP
-		Attributes attrs = entry.getAttributes();
-
+		
 		// pega a lista de atributos do LDAP e os campos da classe associados
 		Hashtable<String, Field> attrFields = obj.getLDAPAttributesFields();
 		for (Entry<String, Field> attrField : attrFields.entrySet()) {
 
-			Attribute attr = attrs.get(attrField.getKey());
+			Attribute attr = entry.getAttribute(attrField.getKey());
 			if (attr != null)
 			{
-
-				// cria uma lista caso o atributo for multivalorado
-				if (attr.size() > 1) {
+				Field field = attrField.getValue();
+				field.setAccessible(true);
+				
+				// verifica se o tipo do campo é uma lista
+				if (field.getType() == List.class) {
+					// cria uma lista de strings com os valores dos campos
+					List<String> attrValues = new ArrayList<>(Arrays.asList(attr.getValues()));
 					
-					//attr.get
-				}
-				else {
+					// ajusta a lista
+					field.set(obj, attrValues);
+				} else {
 					// apenas ajusta o valor do campo
-					attrField.getValue().set(obj, attr.get());
+					field.set(obj, attr.getValue());
 				}
 			}
 		}
