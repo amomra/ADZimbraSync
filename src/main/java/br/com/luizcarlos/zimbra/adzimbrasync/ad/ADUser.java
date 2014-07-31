@@ -1,7 +1,6 @@
 package br.com.luizcarlos.zimbra.adzimbrasync.ad;
 
 import java.util.List;
-import java.util.UUID;
 
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPEntry;
@@ -10,9 +9,6 @@ public class ADUser extends LDAPEntry {
 	
 	@LDAPAttribute
 	private String distinguishedName;
-	
-	@LDAPAttribute
-	private UUID objectGUID;
 	
 	@LDAPAttribute
 	private String sAMAccountName;
@@ -44,14 +40,6 @@ public class ADUser extends LDAPEntry {
 
 	public void setDistinguishedName(String distinguishedName) {
 		this.distinguishedName = distinguishedName;
-	}
-
-	public UUID getObjectGUID() {
-		return objectGUID;
-	}
-
-	public void setObjectGUID(UUID objectGUID) {
-		this.objectGUID = objectGUID;
 	}
 
 	public String getsAMAccountName() {

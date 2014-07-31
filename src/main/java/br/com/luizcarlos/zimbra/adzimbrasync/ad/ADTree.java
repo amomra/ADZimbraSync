@@ -2,11 +2,11 @@ package br.com.luizcarlos.zimbra.adzimbrasync.ad;
 
 import java.util.List;
 
-import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPConnection;
+import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
 
-public class ADTree {
+public class ADTree extends LDAPTree {
 	
-	public ADTree(LDAPConnection conn) {
+	public ADTree() {
 		
 	}
 
