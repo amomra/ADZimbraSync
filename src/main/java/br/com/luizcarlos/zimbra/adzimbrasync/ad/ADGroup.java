@@ -3,47 +3,13 @@ package br.com.luizcarlos.zimbra.adzimbrasync.ad;
 import java.util.List;
 
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPAttribute;
-import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPEntry;
 
-public class ADGroup extends LDAPEntry {
-
-	@LDAPAttribute
-	private String distinguishedName;
-	
-	@LDAPAttribute
-	private String cn;
-	
-	@LDAPAttribute
-	private String mail;
+public class ADGroup extends ADEntry {
 	
 	@LDAPAttribute( name = "member" )
 	private List<String> members;
 	
 	public ADGroup() {
-	}
-
-	public String getDistinguishedName() {
-		return distinguishedName;
-	}
-
-	public void setDistinguishedName(String distinguishedName) {
-		this.distinguishedName = distinguishedName;
-	}
-	
-	public String getCn() {
-		return cn;
-	}
-
-	public void setCn(String cn) {
-		this.cn = cn;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 
 	public List<String> getMembers() {
@@ -52,5 +18,21 @@ public class ADGroup extends LDAPEntry {
 
 	public void setMembers(List<String> members) {
 		this.members = members;
+	}
+	
+	private boolean isMember(String dn) {
+		// verifica a lista de membros do grupo
+		if (this.members != null) {
+			for (String memberDn : this.members)
+				// se o DN estiver contido na lista
+				if (memberDn == dn)
+					return true;
+		}
+		return false;
+	}
+
+	public boolean isMember(ADEntry adEntry) {
+		// verifica se o DN da entrada está na lista
+		return this.isMember(adEntry.getDistinguishedName());
 	}
 }

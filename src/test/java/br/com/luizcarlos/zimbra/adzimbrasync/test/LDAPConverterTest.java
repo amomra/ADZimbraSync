@@ -27,7 +27,7 @@ public class LDAPConverterTest {
 		ldapTree.connect();
 		
 		// faz a busca dos usuários
-		SearchResult result = ldapTree.search("(objectCategory=Person)");
+		SearchResult result = ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
 		for (SearchResultEntry entry : result.getSearchEntries()) {
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// esse atributo sempre será ajustado

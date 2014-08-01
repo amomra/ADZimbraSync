@@ -32,7 +32,7 @@ public class LDAPEntry {
 	public Hashtable<String, Field> getLDAPAttributesFields() {
 		// pega a lista de campos
 		Hashtable<String, Field> fields = new Hashtable<>();
-		for (Field field : this.getClass().getDeclaredFields())
+		for (Field field : this.getClass().getFields())
 		{
 			// se o campo  tiver o annotation
 			if (field.isAnnotationPresent(LDAPAttribute.class))
