@@ -2,6 +2,7 @@ package br.com.luizcarlos.zimbra.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -14,16 +15,23 @@ import com.unboundid.ldap.sdk.SearchResultEntry;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPTreeTest {
+	
+	private TestProperties prop;
+	
+	public LDAPTreeTest() throws IOException {
+		// carrega as propriedades do teste
+		this.prop = new TestProperties();
+	}
 
 	@Test
 	public void testConnect() throws LDAPException {
 		// cria o objeto da conexão
-		LDAPTree ldapTree = new LDAPTree(
-				"192.168.10.132", 
-				389,
-				"dc=testedom,dc=local",
-				"Administrator@TESTEDOM.LOCAL",
-				"Test1234Lol");
+				LDAPTree ldapTree = new LDAPTree(
+						this.prop.getLDAPHostname(), 
+						this.prop.getLDAPPort(),
+						this.prop.getLDAPSearchBase(),
+						this.prop.getLDAPSearchBindDn(),
+						this.prop.getLDAPSearchBindPassword());
 		
 		// realiza a conexão
 		ldapTree.connect();
@@ -38,12 +46,12 @@ public class LDAPTreeTest {
 	@Test
 	public void testDisconnect() throws LDAPException {
 		// cria o objeto da conexão
-		LDAPTree ldapTree = new LDAPTree(
-				"192.168.10.132", 
-				389,
-				"dc=testedom,dc=local",
-				"Administrator@TESTEDOM.LOCAL",
-				"Test1234Lol");
+				LDAPTree ldapTree = new LDAPTree(
+						this.prop.getLDAPHostname(), 
+						this.prop.getLDAPPort(),
+						this.prop.getLDAPSearchBase(),
+						this.prop.getLDAPSearchBindDn(),
+						this.prop.getLDAPSearchBindPassword());
 
 		// realiza a conexão
 		ldapTree.connect();
@@ -58,12 +66,12 @@ public class LDAPTreeTest {
 	@Test
 	public void testSearch() throws Exception {
 		// cria o objeto da conexão
-		LDAPTree ldapTree = new LDAPTree(
-				"192.168.10.132", 
-				389,
-				"dc=testedom,dc=local",
-				"Administrator@TESTEDOM.LOCAL",
-				"Test1234Lol");
+				LDAPTree ldapTree = new LDAPTree(
+						this.prop.getLDAPHostname(), 
+						this.prop.getLDAPPort(),
+						this.prop.getLDAPSearchBase(),
+						this.prop.getLDAPSearchBindDn(),
+						this.prop.getLDAPSearchBindPassword());
 
 		// realiza a conexão
 		ldapTree.connect();

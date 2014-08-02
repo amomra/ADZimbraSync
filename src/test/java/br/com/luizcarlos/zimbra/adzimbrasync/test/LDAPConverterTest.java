@@ -2,6 +2,8 @@ package br.com.luizcarlos.zimbra.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import com.unboundid.ldap.sdk.SearchResult;
@@ -12,16 +14,23 @@ import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPConverter;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPConverterTest {
+	
+	private TestProperties prop;
+	
+	public LDAPConverterTest() throws IOException {
+		// carrega as propriedades do teste
+		this.prop = new TestProperties();
+	}
 
 	@Test
 	public void testConvert() throws Exception {
 		// cria o objeto da conexão
 		LDAPTree ldapTree = new LDAPTree(
-				"192.168.10.132", 
-				389,
-				"dc=testedom,dc=local",
-				"Administrator@TESTEDOM.LOCAL",
-				"Test1234Lol");
+				this.prop.getLDAPHostname(), 
+				this.prop.getLDAPPort(),
+				this.prop.getLDAPSearchBase(),
+				this.prop.getLDAPSearchBindDn(),
+				this.prop.getLDAPSearchBindPassword());
 
 		// realiza a conexão
 		ldapTree.connect();
