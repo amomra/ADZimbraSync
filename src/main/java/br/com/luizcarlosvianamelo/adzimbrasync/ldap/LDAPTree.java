@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.ldap;
+package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import javax.net.ssl.SSLSocketFactory;
 

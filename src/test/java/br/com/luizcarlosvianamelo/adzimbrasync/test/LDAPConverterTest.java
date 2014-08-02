@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.test;
+package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,9 @@ import org.junit.Test;
 import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADUser;
-import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPConverter;
-import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPConverterTest {
 

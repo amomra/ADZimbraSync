@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.test;
+package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,7 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 
-import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPTreeTest {
 

@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.test;
+package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import java.io.IOException;
 import java.io.InputStream;

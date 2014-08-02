@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync;
+package br.com.luizcarlosvianamelo.adzimbrasync;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.extension.ExtensionException;

@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.ldap;
+package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -9,9 +9,30 @@ import java.util.Map.Entry;
 
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.SearchResultEntry;
+import com.unboundid.ldap.sdk.migrate.ldapjdk.LDAPAttribute;
 
+/**
+ * Classe responsável em realizar a conversão das entradas no LDAP em classes
+ * Java. O mapeamento dos atributos do LDAP para os objetos é feito através da
+ * utilização da anotação {@link LDAPAttribute}, onde os campos dos objetos
+ * anotados com esta serão preenchidos com os valores dos atributos
+ * correspondentes.
+ * 
+ * @author Luiz Carlos Viana Melo
+ *
+ */
 public class LDAPConverter {
 
+	/**
+	 * Função que realiza a conversão de uma entrada do LDAP retornado de uma
+	 * busca na árvore para um objeto Java.
+	 * @param objType O objeto do tipo {@link Class} correspondente ao tipo do
+	 * objeto a ser retornado pela função. O tipo do objeto deverá uma classe
+	 * que herda diretamente ou indiretamente a classe {@link LDAPEntry}.
+	 * @param entry
+	 * @return
+	 * @throws Exception Lança
+	 */
 	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResultEntry entry) throws Exception {
 		// cria uma instância do objeto
 		ObjectType obj = objType.newInstance();

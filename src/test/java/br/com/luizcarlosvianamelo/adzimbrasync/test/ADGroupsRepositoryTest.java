@@ -1,4 +1,4 @@
-package br.com.luizcarlos.zimbra.adzimbrasync.test;
+package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADGroup;
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADGroupsRepository;
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADTree;
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADUser;
-import br.com.luizcarlos.zimbra.adzimbrasync.ad.ADUsersRepository;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroup;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroupsRepository;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADTree;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUsersRepository;
 
 public class ADGroupsRepositoryTest {
 
@@ -69,7 +69,7 @@ public class ADGroupsRepositoryTest {
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
 		// faz a busca de todos os grupos que possuem a palavra "gr" no nome
-		List<ADGroup> groups = groupsRep.queryGroupsByName("*gr*");
+		List<ADGroup> groups = groupsRep.queryGroupsByName("*gr*", false);
 		// verifica se todos os grupos possuem a palavra citada
 		for(ADGroup group : groups) {
 			System.out.format("Nome: %s\n", group.getName());
