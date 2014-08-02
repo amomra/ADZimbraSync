@@ -2,8 +2,6 @@ package br.com.luizcarlos.zimbra.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import com.unboundid.ldap.sdk.SearchResult;
@@ -14,18 +12,17 @@ import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPConverter;
 import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPConverterTest {
-	
+
 	private TestProperties prop;
-	
-	public LDAPConverterTest() throws IOException {
+
+	private LDAPTree ldapTree;
+
+	public LDAPConverterTest() throws Exception {
 		// carrega as propriedades do teste
 		this.prop = new TestProperties();
-	}
 
-	@Test
-	public void testConvert() throws Exception {
 		// cria o objeto da conexão
-		LDAPTree ldapTree = new LDAPTree(
+		this.ldapTree = new LDAPTree(
 				this.prop.getLDAPHostname(), 
 				this.prop.getLDAPPort(),
 				this.prop.getLDAPSearchBase(),
@@ -34,9 +31,13 @@ public class LDAPConverterTest {
 
 		// realiza a conexão
 		ldapTree.connect();
-		
+	}
+
+	@Test
+	public void testConvert() throws Exception {
+
 		// faz a busca dos usuários
-		SearchResult result = ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
+		SearchResult result = this.ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
 		for (SearchResultEntry entry : result.getSearchEntries()) {
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// esse atributo sempre será ajustado
@@ -45,9 +46,6 @@ public class LDAPConverterTest {
 			else
 				fail("O objeto do usuário não está sendo preenchido adequadamente");
 		}
-
-		// desconecta
-		ldapTree.disconnect();
 	}
 
 }

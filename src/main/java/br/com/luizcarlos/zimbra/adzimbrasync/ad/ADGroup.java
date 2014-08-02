@@ -25,7 +25,7 @@ public class ADGroup extends ADEntry {
 		if (this.members != null) {
 			for (String memberDn : this.members)
 				// se o DN estiver contido na lista
-				if (memberDn == dn)
+				if (memberDn.equals(dn))
 					return true;
 		}
 		return false;

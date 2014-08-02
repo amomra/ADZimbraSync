@@ -82,7 +82,7 @@ public class ADEntry extends LDAPEntry {
 		if (this.memberOfGroups != null) {
 			for (String memberOfGroupDn : this.memberOfGroups)
 				// se o DN estiver contido na lista
-				if (memberOfGroupDn == groupDn)
+				if (memberOfGroupDn.equals(groupDn))
 					return true;
 		}
 		return false;

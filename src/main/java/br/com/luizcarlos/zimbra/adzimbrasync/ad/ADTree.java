@@ -9,6 +9,16 @@ public class ADTree extends LDAPTree {
 	private ADGroupsRepository groupsRepository;
 	
 	public ADTree() {
+		this("", 389, "", "", "");
+	}
+	
+	public ADTree(String hostname,
+			int port,
+			String ldapSearchBase,
+			String ldapSearchBindDn,
+			String ldapSearchBindPassword) {
+		super(hostname, port, ldapSearchBase, ldapSearchBindDn, ldapSearchBindPassword);
+		
 		// inicializa os repositórios
 		this.usersRepository = new ADUsersRepository(this);
 		this.groupsRepository = new ADGroupsRepository(this);
