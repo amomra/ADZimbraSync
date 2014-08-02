@@ -61,9 +61,24 @@ public class ADGroupsRepository {
 
 		return null;
 	}
-	
+
 	public List<ADGroup> queryGroupsByName(String groupName) throws Exception {
 		return this.queryGroups(String.format("(name=%s)", groupName));
+	}
+	
+	public List<ADGroup> queryDistributionListsByName(String distListName, boolean withMail) throws Exception {
+		/*
+		 * Faz a query do LDAP em que busca as listas de distribuição
+		 * configuradas no AD. Isto é feito verificando se o bit 0x80000000 do
+		 * atributo groupType não está ajustado.
+		 */
+		String searchQuery = String.format("(name=%s)(!(groupType:1.2.840.113556.1.4.803:=2147483648))", distListName);
+
+		// busca apenas os grupos que possuem e-mail
+		if (withMail)
+			searchQuery += "(mail=*)";
+
+		return this.queryGroups(searchQuery);
 	}
 
 	public ADGroup getAdministratorsGroup() throws Exception {
@@ -78,7 +93,7 @@ public class ADGroupsRepository {
 			// se por algum motivo bizarro ele encontrar mais de um, retorna
 			// apenas o primeiro
 			return groups.get(0);
-		
+
 		// lança exceção já que o grupo sempre existirá no AD
 		throw new Exception("Administrators group not found");
 	}
@@ -93,7 +108,7 @@ public class ADGroupsRepository {
 		// busca apenas os grupos que possuem e-mail
 		if (withMail)
 			searchQuery += "(mail=*)";
-		
+
 		return this.queryGroups(searchQuery);
 	}
 }
