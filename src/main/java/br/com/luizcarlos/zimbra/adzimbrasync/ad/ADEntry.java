@@ -8,22 +8,22 @@ import br.com.luizcarlos.zimbra.adzimbrasync.ldap.LDAPEntry;
 public class ADEntry extends LDAPEntry {
 	
 	@LDAPAttribute
-	private String distinguishedName;
+	protected String distinguishedName;
 	
 	@LDAPAttribute
-	private String sAMAccountName;
+	protected String sAMAccountName;
 	
 	@LDAPAttribute
-	private String cn;
+	protected String cn;
 	
 	@LDAPAttribute
-	private String name;
+	protected String name;
 	
 	@LDAPAttribute
-	private String mail;
+	protected String mail;
 	
 	@LDAPAttribute( name = "memberOf" )
-	private List<String> memberOfGroups;
+	protected List<String> memberOfGroups;
 	
 	public ADEntry() {
 		
