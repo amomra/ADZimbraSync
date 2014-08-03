@@ -28,9 +28,11 @@ public class LDAPConverter {
 	 * @param objType O objeto do tipo {@link Class} correspondente ao tipo do
 	 * objeto a ser retornado pela função. O tipo do objeto deverá uma classe
 	 * que herda diretamente ou indiretamente a classe {@link LDAPEntry}.
-	 * @param entry
-	 * @return
-	 * @throws Exception Lança
+	 * @param entry A entrada do LDAP que foi retornada na consulta que será
+	 * convertida para o objeto.
+	 * @return O objeto gerado a partir dos atributos do LDAP.
+	 * @throws Exception Lança exceção quando não for possível ajustar o valor
+	 * de um campo do objeto.
 	 */
 	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResult entry) throws Exception {
 		// cria uma instância do objeto

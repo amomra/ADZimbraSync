@@ -10,6 +10,15 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+/**
+ * Classe que representa uma árvore do LDAP. Esta árvore contém uma série
+ * de entidades que podem ser utilizados para representar os objetos de uma
+ * organização. Estas entidades podem ser retornadas a partir de uma série
+ * de consultas à árvore.
+ * 
+ * @author Luiz Carlos Viana Melo
+ *
+ */
 public class LDAPTree {
 
 	private DirContext ldapContext;
@@ -20,10 +29,22 @@ public class LDAPTree {
 	private String ldapSearchBindDn;
 	private String ldapSearchBindPassword;
 
+	/**
+	 * Construtor padrão da classe. Este inicializa os parâmetros de conexão
+	 * com valores padrões.
+	 */
 	public LDAPTree() {
 		this("", "", "", "");
 	}
 
+	/**
+	 * Construtor parametrizado da classe.
+	 * @param ldapUrl O endereço do servidor LDAP.
+	 * @param ldapSearchBase A base de busca na árvore do LDAP.
+	 * @param ldapSearchBindDn O DN do usuário que pode realizar consultas sobre
+	 * a árvore.
+	 * @param ldapSearchBindPassword A senha do usuário de consulta.
+	 */
 	public LDAPTree(String ldapUrl,
 			String ldapSearchBase,
 			String ldapSearchBindDn,
@@ -37,49 +58,96 @@ public class LDAPTree {
 		this.ldapSearchBindPassword = ldapSearchBindPassword;
 	}
 
+	/**
+	 * Retorna o endereço do servidor LDAP.
+	 */
 	public String getLdapUrl() {
 		return ldapUrl;
 	}
 
+	/**
+	 * Ajusta o endereço do servidor LDAP.
+	 */
 	public void setLdapUrl(String ldapUrl) {
 		this.ldapUrl = ldapUrl;
 	}
 
+	/**
+	 * Retorna o DN que é utilizado como base nas buscas.
+	 */
 	public String getLdapSearchBase() {
 		return ldapSearchBase;
 	}
 
+	/**
+	 * Ajusta o DN que é utilizado como base nas buscas.
+	 */
 	public void setLdapSearchBase(String ldapSearchBase) {
 		this.ldapSearchBase = ldapSearchBase;
 	}
 
+	/**
+	 * Retorna o DN do usuário que será utilizado para a realização das buscas
+	 * na árvore.
+	 */
 	public String getLdapSearchBindDn() {
 		return ldapSearchBindDn;
 	}
 
+	/**
+	 * Ajusta o DN do usuário que será utilizado para a realização das buscas na
+	 * árvore.
+	 */
 	public void setLdapSearchBindDn(String ldapSearchBindDn) {
 		this.ldapSearchBindDn = ldapSearchBindDn;
 	}
 
+	/**
+	 * Retorna a senha do usuário que será utilizado para a realização das
+	 * buscas na árvore.
+	 */
 	public String getLdapSearchBindPassword() {
 		return ldapSearchBindPassword;
 	}
 
+	/**
+	 * Ajusta a senha do usuário que será utilizado para a realização das
+	 * buscas na árvore.
+	 */
 	public void setLdapSearchBindPassword(String ldapSearchBindPassword) {
 		this.ldapSearchBindPassword = ldapSearchBindPassword;
 	}
 
+	/**
+	 * Função que ajusta o caminho das pastas onde estão inclusos os
+	 * certificados do servidor LDAP. Estes são utilizados para a realização
+	 * de uma conexão segura com o servidor.
+	 * @param certPath O caminho da pasta de certificados.
+	 */
 	public void setSSLCertificatesPath(String certPath) {
 		// ajusta o caminho no SO com as chaves para o servidor
 		System.setProperty("javax.net.ssl.keyStore", certPath);
 		System.setProperty("javax.net.ssl.trustStore", certPath);
 	}
 	
+	/**
+	 * Função que realiza uma conexão não segura com o servidor de acordo
+	 * com os parâmetros definidos.
+	 * @throws NamingException Lança exceção caso não for possível se conectar
+	 * no servidor.
+	 */
 	public void connect() throws NamingException {
 		// realiza uma conexão não segura
 		this.connect(false);
 	}
 
+	/**
+	 * Função que realiza uma conexão com o servidor de acordo com os parâmetros
+	 * definidos.
+	 * @param ssl Indica se será realizada uma conexão segura com o servidor.
+	 * @throws NamingException Lança exceção caso não for possível se conectar
+	 * no servidor.
+	 */
 	public void connect(boolean ssl) throws NamingException {		
 		// inicializa os atributos da conexão
 		Hashtable<String, String> ldapEnv = new Hashtable<>();
@@ -97,6 +165,10 @@ public class LDAPTree {
 		this.ldapContext = new InitialDirContext(ldapEnv);
 	}
 
+	/**
+	 * Realiza a desconexão com o servidor.
+	 * @throws NamingException Lança exceção caso não for possível realiza-la.
+	 */
 	public void disconnect() throws NamingException {
 		// finaliza a conexão
 		if (this.ldapContext != null)
@@ -104,10 +176,24 @@ public class LDAPTree {
 		this.ldapContext = null;
 	}
 
+	/**
+	 * Informa se está conectado com o servidor.
+	 * @return Retorna <code>true</code> caso estiver conectado. Caso contrário,
+	 * retorna <code>false</code>.
+	 */
 	public boolean isConnected() {
 		return this.ldapContext != null;
 	}
 
+	/**
+	 * Função que realiza uma busca na árvore LDAP conforme o filtro passado.
+	 * @param filter O filtro a ser aplicado na busca.
+	 * @param returnAttributes A lista com os atributos das entidades que serão
+	 * retornados.
+	 * @return Retorna a estrutura contendo o resultado da consulta.
+	 * @throws Exception Lança uma exceção quando não for possível realizar a
+	 * consulta.
+	 */
 	public NamingEnumeration<SearchResult> search(String filter, String... returnAttributes) throws Exception {
 		// lança exceção se não estiver conectado
 		if (!this.isConnected())
