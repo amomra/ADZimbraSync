@@ -43,7 +43,7 @@ public class LDAPConverterTest {
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// esse atributo sempre será ajustado
 			if (user.getDistinguishedName() != null)
-				System.out.println(user.getDistinguishedName());
+				System.out.format("DN: %s | CC: %d\n", user.getDistinguishedName(), user.getCountryCode());
 			else
 				fail("O objeto do usuário não está sendo preenchido adequadamente");
 		}

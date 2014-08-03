@@ -1,7 +1,8 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -23,7 +24,7 @@ import javax.naming.directory.SearchResult;
 public class LDAPConverter {
 
 	/**
-	 * Função que realiza a conversão de uma entrada do LDAP retornado de uma
+	 * Função que realiza a conversão de uma entrasda do LDAP retornado de uma
 	 * busca na árvore para um objeto Java.
 	 * @param objType O objeto do tipo {@link Class} correspondente ao tipo do
 	 * objeto a ser retornado pela função. O tipo do objeto deverá uma classe
@@ -49,21 +50,35 @@ public class LDAPConverter {
 			if (attr != null)
 			{
 				Field field = attrField.getValue();
-				field.setAccessible(true);
+				// pega a anotação informando a classe de conversão do atributo
+				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
+				LDAPAttributeParser parser = (LDAPAttributeParser) attrAnn.attributeParser().newInstance();
 				
-				// verifica se o tipo do campo é uma lista
-				if (field.getType() == List.class) {
-					// cria uma lista de strings com os valores dos campos
-					List<String> attrValues = new ArrayList<>();
-					for (int i = 0; i < attr.size(); i++)
-						attrValues.add((String) attr.get(i));
-					
-					// ajusta a lista
-					field.set(obj, attrValues);
-				} else {
-					// apenas ajusta o valor do campo
-					field.set(obj, attr.get());
-				}
+				// verifica o tipo para chamar a função de conversão
+				Type fieldType = field.getType();
+				// se for uma lista, pega o tipo interno
+				if (fieldType.equals(List.class))
+					fieldType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+				
+				// faz a chamada do parser
+				if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class))
+					parser.parseAsBoolean(field, obj, attr);
+				else if (fieldType.equals(byte.class) || fieldType.equals(Byte.class))
+					parser.parseAsByte(field, obj, attr);
+				else if (fieldType.equals(char.class) || fieldType.equals(Character.class))
+					parser.parseAsChar(field, obj, attr);
+				else if (fieldType.equals(short.class) || fieldType.equals(Short.class))
+					parser.parseAsShort(field, obj, attr);
+				else if (fieldType.equals(int.class) || fieldType.equals(Integer.class))
+					parser.parseAsInt(field, obj, attr);
+				else if (fieldType.equals(long.class) || fieldType.equals(Long.class))
+					parser.parseAsLong(field, obj, attr);
+				else if (fieldType.equals(float.class) || fieldType.equals(Float.class))
+					parser.parseAsFloat(field, obj, attr);
+				else if (fieldType.equals(double.class) || fieldType.equals(Double.class))
+					parser.parseAsDouble(field, obj, attr);
+				else
+					parser.parseAsObject(field, obj, attr);
 			}
 		}
 
