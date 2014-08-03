@@ -2,14 +2,13 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.unboundid.ldap.sdk.Attribute;
-import com.unboundid.ldap.sdk.SearchResultEntry;
-import com.unboundid.ldap.sdk.migrate.ldapjdk.LDAPAttribute;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 
 /**
  * Classe responsável em realizar a conversão das entradas no LDAP em classes
@@ -33,7 +32,7 @@ public class LDAPConverter {
 	 * @return
 	 * @throws Exception Lança
 	 */
-	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResultEntry entry) throws Exception {
+	public static <ObjectType extends LDAPEntry> ObjectType convert(Class<ObjectType> objType, SearchResult entry) throws Exception {
 		// cria uma instância do objeto
 		ObjectType obj = objType.newInstance();
 		
@@ -41,7 +40,10 @@ public class LDAPConverter {
 		Hashtable<String, Field> attrFields = obj.getLDAPAttributesFields();
 		for (Entry<String, Field> attrField : attrFields.entrySet()) {
 
-			Attribute attr = entry.getAttribute(attrField.getKey());
+			// pega a lista de atributos
+			Attributes attrs = entry.getAttributes();
+			
+			Attribute attr = attrs.get(attrField.getKey());
 			if (attr != null)
 			{
 				Field field = attrField.getValue();
@@ -50,13 +52,15 @@ public class LDAPConverter {
 				// verifica se o tipo do campo é uma lista
 				if (field.getType() == List.class) {
 					// cria uma lista de strings com os valores dos campos
-					List<String> attrValues = new ArrayList<>(Arrays.asList(attr.getValues()));
+					List<String> attrValues = new ArrayList<>();
+					for (int i = 0; i < attr.size(); i++)
+						attrValues.add((String) attr.get(i));
 					
 					// ajusta a lista
 					field.set(obj, attrValues);
 				} else {
 					// apenas ajusta o valor do campo
-					field.set(obj, attr.getValue());
+					field.set(obj, attr.get());
 				}
 			}
 		}

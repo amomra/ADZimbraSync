@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="lib/dom4j-1.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/zimbracommon.jar"/>
 	<classpathentry kind="lib" path="lib/zimbrastore.jar"/>
-	<classpathentry kind="lib" path="lib/unboundid-ldapsdk-2.3.5-se.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

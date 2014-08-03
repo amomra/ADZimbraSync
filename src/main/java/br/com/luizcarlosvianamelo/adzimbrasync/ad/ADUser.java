@@ -1,6 +1,6 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import javax.naming.directory.SearchResult;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
@@ -11,7 +11,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
  * tenha permissão para tal. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
  * através da chamada da função de conversão
- * {@link LDAPConverter#convert(Class, SearchResultEntry) convert}.
+ * {@link LDAPConverter#convert(Class, SearchResult) convert}.
  *  
  * @author Luiz Carlos Viana Melo
  *

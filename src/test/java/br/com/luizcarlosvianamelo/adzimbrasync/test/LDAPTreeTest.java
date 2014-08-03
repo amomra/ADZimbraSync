@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Test;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 
-import com.unboundid.ldap.sdk.Attribute;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import org.junit.Test;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPTree;
 
@@ -24,11 +25,10 @@ public class LDAPTreeTest {
 	}
 
 	@Test
-	public void testConnect() throws LDAPException {
+	public void testConnect() throws NamingException {
 		// cria o objeto da conexão
 		LDAPTree ldapTree = new LDAPTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
@@ -44,11 +44,10 @@ public class LDAPTreeTest {
 	}
 
 	@Test
-	public void testDisconnect() throws LDAPException {
+	public void testDisconnect() throws NamingException {
 		// cria o objeto da conexão
 		LDAPTree ldapTree = new LDAPTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
@@ -67,8 +66,7 @@ public class LDAPTreeTest {
 	public void testSearch() throws Exception {
 		// cria o objeto da conexão
 		LDAPTree ldapTree = new LDAPTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
@@ -77,16 +75,19 @@ public class LDAPTreeTest {
 		ldapTree.connect();
 
 		// faz a consulta do objectGUID dos usuários
-		SearchResult result = ldapTree.search("(objectCategory=Person)", "objectGUID", "whenCreated");
-		for (SearchResultEntry entry : result.getSearchEntries()) {
+		NamingEnumeration<SearchResult> result = ldapTree.search("(objectCategory=Person)", "objectGUID", "whenCreated");
+		
+		while (result.hasMoreElements()) {
+			
+			SearchResult entry = result.nextElement();
+			
+			Attributes attrs = entry.getAttributes();
 
-			Attribute attr = entry.getAttribute("objectGUID");
-			System.out.println("objectGUID: " + UUID.nameUUIDFromBytes(attr.getValueByteArray()).toString());
+			Attribute attr = attrs.get("objectGUID");
+			System.out.println("objectGUID: " + UUID.nameUUIDFromBytes(attr.get().toString().getBytes()).toString());
 
-			attr = entry.getAttribute("whenCreated");
-			System.out.println("whenCreated: " + attr.getValue());
-
-
+			attr = attrs.get("whenCreated");
+			System.out.println("whenCreated: " + attr.get().toString());
 		}
 
 		// desconecta

@@ -8,8 +8,7 @@ public class TestProperties {
 
 	private final String PROPERTIES_FILE = "config.properties";
 	
-	private String ldapHostname;
-	private int ldapPort;
+	private String ldapUrl;
 	private String ldapSearchBase;
 	private String ldapSearchBindDn;
 	private String ldapSearchBindPassword;
@@ -23,19 +22,14 @@ public class TestProperties {
 		prop.load(in);
 		
 		// ajusta os parametros
-		this.ldapHostname = prop.getProperty("ldap.hostname");
-		this.ldapPort = Integer.parseInt(prop.getProperty("ldap.port"));
+		this.ldapUrl = prop.getProperty("ldap.url");
 		this.ldapSearchBase = prop.getProperty("ldap.searchBase");
 		this.ldapSearchBindDn = prop.getProperty("ldap.searchBindDn");
 		this.ldapSearchBindPassword = prop.getProperty("ldap.searchBindPassword");
 	}
 
-	public String getLDAPHostname() {
-		return ldapHostname;
-	}
-
-	public int getLDAPPort() {
-		return ldapPort;
+	public String getLDAPUrl() {
+		return ldapUrl;
 	}
 
 	public String getLDAPSearchBase() {

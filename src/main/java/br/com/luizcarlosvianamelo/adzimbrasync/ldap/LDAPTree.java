@@ -1,56 +1,48 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
-import javax.net.ssl.SSLSocketFactory;
+import java.util.Hashtable;
 
-import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.SearchScope;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 public class LDAPTree {
 
-	private LDAPConnection conn;
+	private DirContext ldapContext;
 
-	private String hostname;
-	private int port;
+	private String ldapUrl;
 
 	private String ldapSearchBase;
 	private String ldapSearchBindDn;
 	private String ldapSearchBindPassword;
 
 	public LDAPTree() {
-		this("", 389, "", "", "");
+		this("", "", "", "");
 	}
 
-	public LDAPTree(String hostname,
-			int port,
+	public LDAPTree(String ldapUrl,
 			String ldapSearchBase,
 			String ldapSearchBindDn,
 			String ldapSearchBindPassword) {
-		this.conn = null;
+		this.ldapContext = null;
 
-		this.hostname = hostname;
-		this.port = port;
+		this.ldapUrl = ldapUrl;
 
 		this.ldapSearchBase = ldapSearchBase;
 		this.ldapSearchBindDn = ldapSearchBindDn;
 		this.ldapSearchBindPassword = ldapSearchBindPassword;
 	}
 
-	public String getHostname() {
-		return hostname;
+	public String getLdapUrl() {
+		return ldapUrl;
 	}
 
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
+	public void setLdapUrl(String ldapUrl) {
+		this.ldapUrl = ldapUrl;
 	}
 
 	public String getLdapSearchBase() {
@@ -83,46 +75,53 @@ public class LDAPTree {
 		System.setProperty("javax.net.ssl.trustStore", certPath);
 	}
 	
-	public void connect() throws LDAPException {
+	public void connect() throws NamingException {
 		// realiza uma conexão não segura
 		this.connect(false);
 	}
 
-	public void connect(boolean ssl) throws LDAPException {		
+	public void connect(boolean ssl) throws NamingException {		
+		// inicializa os atributos da conexão
+		Hashtable<String, String> ldapEnv = new Hashtable<>();
+		ldapEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        ldapEnv.put(Context.PROVIDER_URL, this.ldapUrl);
+        ldapEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
+        ldapEnv.put(Context.SECURITY_PRINCIPAL, this.ldapSearchBindDn);
+        ldapEnv.put(Context.SECURITY_CREDENTIALS, this.ldapSearchBindPassword);
 
+        // se estiver habilitada a conexão segura
+        if (ssl)
+        	ldapEnv.put(Context.SECURITY_PROTOCOL, "ssl");
+        	
 		// inicializa a conexão
-		if (ssl)
-			this.conn = new LDAPConnection(
-					SSLSocketFactory.getDefault(),
-					this.hostname,
-					this.port,
-					this.ldapSearchBindDn,
-					this.ldapSearchBindPassword);
-		else
-			this.conn = new LDAPConnection(
-					this.hostname,
-					this.port,
-					this.ldapSearchBindDn,
-					this.ldapSearchBindPassword);
+		this.ldapContext = new InitialDirContext(ldapEnv);
 	}
 
-	public void disconnect() {
+	public void disconnect() throws NamingException {
 		// finaliza a conexão
-		if (this.conn != null)
-			this.conn.close();
-		this.conn = null;
+		if (this.ldapContext != null)
+			this.ldapContext.close();
+		this.ldapContext = null;
 	}
 
 	public boolean isConnected() {
-		return this.conn != null && this.conn.isConnected();
+		return this.ldapContext != null;
 	}
 
-	public SearchResult search(String filter, String... returnAttributes) throws Exception {
+	public NamingEnumeration<SearchResult> search(String filter, String... returnAttributes) throws Exception {
 		// lança exceção se não estiver conectado
 		if (!this.isConnected())
 			throw new Exception("Not connected to LDAP server");
+		
+		// ajusta os parâmetros da busca
+		SearchControls searchControls = new SearchControls();
+		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		// se a lista de atributos a serem retornadas for vazia, então retorna
+		// todos os atributos
+		if (returnAttributes.length > 0)
+			searchControls.setReturningAttributes(returnAttributes);
 
 		// realiza a busca
-		return this.conn.search(this.ldapSearchBase, SearchScope.SUB, filter, returnAttributes);
+		return this.ldapContext.search(this.ldapSearchBase, filter, searchControls);
 	}
 }

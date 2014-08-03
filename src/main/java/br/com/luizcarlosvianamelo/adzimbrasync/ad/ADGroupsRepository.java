@@ -3,10 +3,10 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.SearchResult;
 
-import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
  * Classe que representa o repositório de grupos que estão contidos na árvore do
@@ -62,13 +62,15 @@ public class ADGroupsRepository {
 			searchString = String.format(searchString, "");
 
 		// faz a consulta
-		SearchResult result = this.adTree.search(searchString);
+		NamingEnumeration<SearchResult> result = this.adTree.search(searchString);
 
 		// armazena a lista de usuários
 		List<ADGroup> groups = new ArrayList<>();
 
 		// monta os objetos
-		for (SearchResultEntry entry : result.getSearchEntries()) {
+		while (result.hasMoreElements()) {
+			SearchResult entry = result.nextElement();
+
 			ADGroup group = LDAPConverter.convert(ADGroup.class, entry);
 			// adiciona na lista
 			groups.add(group);
@@ -121,7 +123,7 @@ public class ADGroupsRepository {
 
 		return this.queryGroups(searchQuery);
 	}
-	
+
 	/**
 	 * Função que faz a busca de listas de distribuição a partir de um nome.
 	 * @param distListName O nome da lista a ser buscada. Podem ser utilizados os

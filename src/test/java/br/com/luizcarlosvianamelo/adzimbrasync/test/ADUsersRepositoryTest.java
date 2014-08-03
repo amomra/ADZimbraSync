@@ -15,17 +15,16 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUsersRepository;
 public class ADUsersRepositoryTest {
 
 	private TestProperties prop;
-	
+
 	private ADTree adTree;
 
 	public ADUsersRepositoryTest() throws Exception {
 		// carrega as propriedades do teste
 		this.prop = new TestProperties();
-		
+
 		// cria o objeto da conexão
 		this.adTree = new ADTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(), 
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
@@ -36,7 +35,7 @@ public class ADUsersRepositoryTest {
 
 	@Test
 	public void testQueryUsers() throws Exception {
-		
+
 		System.out.println("- queryUsers -----------------------");
 
 		// pega o repositório de usuários
@@ -68,7 +67,7 @@ public class ADUsersRepositoryTest {
 
 	@Test
 	public void testQueryUsersByName() throws Exception {
-		
+
 		System.out.println("- queryUsersByName -----------------");
 
 		// pega o repositório de usuários
@@ -79,7 +78,7 @@ public class ADUsersRepositoryTest {
 		// verifica se todos os usuário
 		for (ADUser user : users) {
 			System.out.format("Nome: %s | E-mail: %s\n", user.getName(), user.getMail());
-			
+
 			// se não tiver o "Usuário" no nome
 			if (!user.getName().contains("Usuário"))
 				fail(String.format("O usuário \"%s\" não possui a palavra \"Usuário\" no nome", user.getDistinguishedName()));
@@ -88,22 +87,22 @@ public class ADUsersRepositoryTest {
 
 	@Test
 	public void testQueryGroupMembers() throws Exception {
-		
+
 		System.out.println("- queryGroupMembers ----------------");
 
 		// pega o repositório de usuários
 		ADUsersRepository usersRep = this.adTree.getUsersRepository();
-		
+
 		// pega o repositório de grupos para retornar o grupo de administradores
 		ADGroupsRepository groupsRep = adTree.getGroupsRepository();
 		ADGroup adminGroup = groupsRep.getAdministratorsGroup();
-		
+
 		// pega a lista de usuários deste grupo
 		List<ADUser> users = usersRep.queryGroupMembers(adminGroup, false);
 		// verifica se todos os usuários são membros do grupo
 		for (ADUser user : users) {
 			System.out.format("Nome: %s\n", user.getName());
-			
+
 			if (!adminGroup.isMember(user))
 				fail(String.format("Usuário \"%s\" não é membro do grupo \"%s\"", user.getName(), adminGroup.getName()));
 		}

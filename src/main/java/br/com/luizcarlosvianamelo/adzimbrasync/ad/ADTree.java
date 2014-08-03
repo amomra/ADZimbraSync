@@ -22,24 +22,22 @@ public class ADTree extends LDAPTree {
 	 * com valores padrões.
 	 */
 	public ADTree() {
-		this("", 389, "", "", "");
+		this("",  "", "", "");
 	}
 	
 	/**
 	 * Construtor parametrizado da classe.
-	 * @param hostname O endereço do servidor AD.
-	 * @param port A porta do servidor AD.
+	 * @param ldapUrl O endereço do servidor AD.
 	 * @param ldapSearchBase A base de busca na árvore do LDAP.
 	 * @param ldapSearchBindDn O DN do usuário que pode realizar consultas sobre
 	 * a árvore.
 	 * @param ldapSearchBindPassword A senha do usuário de consulta.
 	 */
-	public ADTree(String hostname,
-			int port,
+	public ADTree(String ldapUrl,
 			String ldapSearchBase,
 			String ldapSearchBindDn,
 			String ldapSearchBindPassword) {
-		super(hostname, port, ldapSearchBase, ldapSearchBindDn, ldapSearchBindPassword);
+		super(ldapUrl, ldapSearchBase, ldapSearchBindDn, ldapSearchBindPassword);
 		
 		// inicializa os repositórios
 		this.usersRepository = new ADUsersRepository(this);

@@ -24,8 +24,7 @@ public class ADGroupsRepositoryTest {
 
 		// cria o objeto da conexão
 		this.adTree = new ADTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());

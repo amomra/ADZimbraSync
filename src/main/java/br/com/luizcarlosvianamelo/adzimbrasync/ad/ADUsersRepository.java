@@ -3,10 +3,10 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.SearchResult;
 
-import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
  * Classe que representa o repositório de usuários que estão contidos na árvore do
@@ -17,7 +17,7 @@ import com.unboundid.ldap.sdk.SearchResultEntry;
  *
  */
 public class ADUsersRepository {
-	
+
 	private ADTree adTree;
 
 	/**
@@ -28,7 +28,7 @@ public class ADUsersRepository {
 	ADUsersRepository(ADTree adTree) {
 		this.adTree = adTree;
 	}
-	
+
 	/**
 	 * Função que retorna todos os usuários contidos na árvore do AD.
 	 * @return A lista contendo todos os usuários contidos na árvore do AD. Caso
@@ -39,7 +39,7 @@ public class ADUsersRepository {
 	public List<ADUser> queryUsers() throws Exception {
 		return this.queryUsers(null);
 	}
-	
+
 	/**
 	 * Função que faz a busca dos usuários contidos na árvore do AD de acordo com
 	 * o filtro definido.
@@ -60,23 +60,26 @@ public class ADUsersRepository {
 			searchString = String.format(searchString, searchFilter);
 		else
 			searchString = String.format(searchString, "");
-		
+
 		// faz a consulta
-		SearchResult result = this.adTree.search(searchString);
-		
+		NamingEnumeration<SearchResult> result = this.adTree.search(searchString);
+
 		// armazena a lista de usuários
 		List<ADUser> users = new ArrayList<>();
-		
+
 		// monta os objetos
-		for (SearchResultEntry entry : result.getSearchEntries()) {
+		while (result.hasMoreElements()) {
+
+			SearchResult entry = result.nextElement();
+
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// adiciona na lista
 			users.add(user);
 		}
-		
+
 		return users;
 	}
-	
+
 	/**
 	 * Função que faz a busca de um usuário a partir do seu login.
 	 * @param accountName O login do usuário a ser buscado.
@@ -92,16 +95,16 @@ public class ADUsersRepository {
 		 * usuário.
 		 */
 		List<ADUser> users = this.queryUsers(String.format("(sAMAccountName=%s)", accountName));
-		
+
 		// retorna o usuário caso ele tenha sido encontrado
 		if (users.size() > 0)
 			// se por algum motivo bizarro ele encontrar mais de um, retorna
 			// apenas o primeiro
 			return users.get(0);
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Função que faz a busca de um usuário a partir do seu DN.
 	 * @param userDN O DN do usuário a ser buscado.
@@ -117,16 +120,16 @@ public class ADUsersRepository {
 		 * usuário.
 		 */
 		List<ADUser> users = this.queryUsers(String.format("(distinguishedName=%s)", userDN));
-		
+
 		// retorna o usuário caso ele tenha sido encontrado
 		if (users.size() > 0)
 			// se por algum motivo bizarro ele encontrar mais de um, retorna
 			// apenas o primeiro
 			return users.get(0);
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Função que faz a busca de usuários a partir de um nome.
 	 * @param userName O nome do usuários a ser buscado. Podem ser utilizados os
@@ -140,14 +143,14 @@ public class ADUsersRepository {
 	 */
 	public List<ADUser> queryUsersByName(String userName, boolean withMail) throws Exception {
 		String searchQuery = String.format("(name=%s)", userName);
-		
+
 		// busca apenas os usuários que possuem e-mail
 		if (withMail)
 			searchQuery += "(mail=*)";
-		
+
 		return this.queryUsers(searchQuery);
 	}
-	
+
 	/**
 	 * Função que retorna todos os usuários que pertencem ao grupo.
 	 * @param group O grupo a ser buscado.
@@ -168,7 +171,7 @@ public class ADUsersRepository {
 		// busca apenas os usuários que possuem e-mail
 		if (withMail)
 			searchQuery += "(mail=*)";
-		
+
 		return this.queryUsers(searchQuery);
 	}
 }

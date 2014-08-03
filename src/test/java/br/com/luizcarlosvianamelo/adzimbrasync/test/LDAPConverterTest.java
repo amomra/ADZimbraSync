@@ -2,10 +2,10 @@ package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.SearchResult;
 
-import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import org.junit.Test;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
@@ -23,8 +23,7 @@ public class LDAPConverterTest {
 
 		// cria o objeto da conexão
 		this.ldapTree = new LDAPTree(
-				this.prop.getLDAPHostname(), 
-				this.prop.getLDAPPort(),
+				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
@@ -37,8 +36,10 @@ public class LDAPConverterTest {
 	public void testConvert() throws Exception {
 
 		// faz a busca dos usuários
-		SearchResult result = this.ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
-		for (SearchResultEntry entry : result.getSearchEntries()) {
+		NamingEnumeration<SearchResult> result = this.ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
+		while (result.hasMoreElements()) {
+			SearchResult entry = result.nextElement();
+
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// esse atributo sempre será ajustado
 			if (user.getDistinguishedName() != null)

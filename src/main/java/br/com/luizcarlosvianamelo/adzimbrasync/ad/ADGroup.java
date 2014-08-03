@@ -2,7 +2,7 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
 import java.util.List;
 
-import com.unboundid.ldap.sdk.SearchResultEntry;
+import javax.naming.directory.SearchResult;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
@@ -12,7 +12,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
  * pode ser um grupo de segurança ou uma lista de distribuição. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
  * através da chamada da função de conversão
- * {@link LDAPConverter#convert(Class, SearchResultEntry) convert}.
+ * {@link LDAPConverter#convert(Class, SearchResult) convert}.
  * 
  * @author Luiz Carlos Viana Melo
  *
