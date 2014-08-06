@@ -12,6 +12,8 @@ public class TestProperties {
 	private String ldapSearchBase;
 	private String ldapSearchBindDn;
 	private String ldapSearchBindPassword;
+	private String ldapCertificatePath;
+	private String ldapCertificateFilePassword;
 	
 	public TestProperties() throws IOException {
 		// carrega o inputstream do arquivo de propriedades
@@ -26,6 +28,8 @@ public class TestProperties {
 		this.ldapSearchBase = prop.getProperty("ldap.searchBase");
 		this.ldapSearchBindDn = prop.getProperty("ldap.searchBindDn");
 		this.ldapSearchBindPassword = prop.getProperty("ldap.searchBindPassword");
+		this.ldapCertificatePath = prop.getProperty("ldap.certificatePath");
+		this.ldapCertificateFilePassword = prop.getProperty("ldap.certificateFilePassword");
 	}
 
 	public String getLDAPUrl() {
@@ -43,4 +47,12 @@ public class TestProperties {
 	public String getLDAPSearchBindPassword() {
 		return ldapSearchBindPassword;
 	}
+
+	public String getLDAPCertificatePath() {
+		return ldapCertificatePath;
+	}
+
+	public String getLDAPCertificateFilePassword() {
+		return ldapCertificateFilePassword;
+	}	
 }

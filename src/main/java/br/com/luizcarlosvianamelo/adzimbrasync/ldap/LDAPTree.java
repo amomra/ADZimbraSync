@@ -123,13 +123,14 @@ public class LDAPTree {
 	 * certificados do servidor LDAP. Estes são utilizados para a realização
 	 * de uma conexão segura com o servidor.
 	 * @param certPath O caminho da pasta de certificados.
+	 * @param certPassword A senha do arquivo de certificados.
 	 */
-	public void setSSLCertificatesPath(String certPath) {
+	public void setSSLCertificatesPath(String certPath, String certPassword) {
 		// ajusta o caminho no SO com as chaves para o servidor
-		System.setProperty("javax.net.ssl.keyStore", certPath);
 		System.setProperty("javax.net.ssl.trustStore", certPath);
+		System.setProperty("javax.net.ssl.trustStorePassword", certPassword);
 	}
-	
+
 	/**
 	 * Função que realiza uma conexão não segura com o servidor de acordo
 	 * com os parâmetros definidos.
@@ -152,15 +153,15 @@ public class LDAPTree {
 		// inicializa os atributos da conexão
 		Hashtable<String, String> ldapEnv = new Hashtable<>();
 		ldapEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        ldapEnv.put(Context.PROVIDER_URL, this.ldapUrl);
-        ldapEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
-        ldapEnv.put(Context.SECURITY_PRINCIPAL, this.ldapSearchBindDn);
-        ldapEnv.put(Context.SECURITY_CREDENTIALS, this.ldapSearchBindPassword);
+		ldapEnv.put(Context.PROVIDER_URL, this.ldapUrl);
+		ldapEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
+		ldapEnv.put(Context.SECURITY_PRINCIPAL, this.ldapSearchBindDn);
+		ldapEnv.put(Context.SECURITY_CREDENTIALS, this.ldapSearchBindPassword);
 
-        // se estiver habilitada a conexão segura
-        if (ssl)
-        	ldapEnv.put(Context.SECURITY_PROTOCOL, "ssl");
-        	
+		// se estiver habilitada a conexão segura
+		if (ssl)
+			ldapEnv.put(Context.SECURITY_PROTOCOL, "ssl");
+
 		// inicializa a conexão
 		this.ldapContext = new InitialDirContext(ldapEnv);
 	}
@@ -198,7 +199,7 @@ public class LDAPTree {
 		// lança exceção se não estiver conectado
 		if (!this.isConnected())
 			throw new Exception("Not connected to LDAP server");
-		
+
 		// ajusta os parâmetros da busca
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);

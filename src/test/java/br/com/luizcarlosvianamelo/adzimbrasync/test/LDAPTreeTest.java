@@ -44,6 +44,30 @@ public class LDAPTreeTest {
 	}
 
 	@Test
+	public void testConnectSsl() throws Exception {
+		// cria o objeto da conexão
+		LDAPTree ldapTree = new LDAPTree(
+				this.prop.getLDAPUrl(),
+				this.prop.getLDAPSearchBase(),
+				this.prop.getLDAPSearchBindDn(),
+				this.prop.getLDAPSearchBindPassword());
+
+		// ajusta a pasta onde estão incluídos os certificados do servidor
+		ldapTree.setSSLCertificatesPath(
+				this.prop.getLDAPCertificatePath(),
+				this.prop.getLDAPCertificateFilePassword());
+
+		// tenta fazer uma conexão segura
+		ldapTree.connect(true);
+
+		// verifica se está conectado
+		assertTrue("Não se conectou com o servidor através de uma conexão segura.", ldapTree.isConnected());
+
+		// desconecta
+		ldapTree.disconnect();
+	}
+
+	@Test
 	public void testDisconnect() throws NamingException {
 		// cria o objeto da conexão
 		LDAPTree ldapTree = new LDAPTree(
@@ -76,11 +100,11 @@ public class LDAPTreeTest {
 
 		// faz a consulta do objectGUID dos usuários
 		NamingEnumeration<SearchResult> result = ldapTree.search("(objectCategory=Person)", "objectGUID", "whenCreated");
-		
+
 		while (result.hasMoreElements()) {
-			
+
 			SearchResult entry = result.nextElement();
-			
+
 			Attributes attrs = entry.getAttributes();
 
 			Attribute attr = attrs.get("objectGUID");
