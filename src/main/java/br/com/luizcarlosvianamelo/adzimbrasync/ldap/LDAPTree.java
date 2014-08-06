@@ -7,6 +7,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -210,5 +211,22 @@ public class LDAPTree {
 
 		// realiza a busca
 		return this.ldapContext.search(this.ldapSearchBase, filter, searchControls);
+	}
+	
+	/**
+	 * Função que modifica os valores dos atributos de uma entrada do LDAP.
+	 * @param dn O DN da entrada do LDAP que será modificado.
+	 * @param attrsToBeModified A lista de atributos da entrada que serão
+	 * modificados.
+	 * @throws Exception Lança uma exceção quando não for possível realizar a
+	 * alteração.
+	 */
+	public void modify(String dn, ModificationItem... attrsToBeModified) throws Exception {
+		// lança exceção se não estiver conectado
+		if (!this.isConnected())
+			throw new Exception("Not connected to LDAP server");
+		
+		// modifica os atributos
+		this.ldapContext.modifyAttributes(dn, attrsToBeModified);
 	}
 }

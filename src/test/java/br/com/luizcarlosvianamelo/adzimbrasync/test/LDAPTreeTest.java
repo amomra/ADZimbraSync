@@ -9,6 +9,9 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 
 import org.junit.Test;
@@ -118,4 +121,64 @@ public class LDAPTreeTest {
 		ldapTree.disconnect();
 	}
 
+	@Test
+	public void testModify() throws Exception {
+		// cria o objeto da conexão
+		LDAPTree ldapTree = new LDAPTree(
+				this.prop.getLDAPUrl(),
+				this.prop.getLDAPSearchBase(),
+				this.prop.getLDAPSearchBindDn(),
+				this.prop.getLDAPSearchBindPassword());
+
+		// realiza a conexão
+		ldapTree.connect();
+		
+		// faz a consulta do sobrenome do usuário com o username "usuario"
+		NamingEnumeration<SearchResult> result = ldapTree.search("(sAMAccountName=usuario)", "distinguishedName", "sn");
+		
+		// informa erro caso não encontre o usuário
+		assertTrue("Usuário \"usuario\" não foi encontrado. Crie ele para este teste", result.hasMoreElements());
+		
+		SearchResult entry = result.nextElement();
+		Attribute attr = entry.getAttributes().get("sn");
+		
+		// verifica se o atributo foi encontrado
+		assertNotNull("Usuário \"usuario\" não possui o atributo \"sn\" ajustado. Ajuste ele para o teste", attr);
+		
+		String sn = (String) attr.get();
+		String snNew = sn + " teste";
+		
+		// pega o DN do usuário
+		attr = entry.getAttributes().get("distinguishedName");
+		assertNotNull("Usuário \"usuario\" não possui o atributo \"distinguishedName\" ajustado. Tem alguma coisa muito errada o.O", attr);
+		String dn = (String) attr.get();
+		
+		// ajusta o novo valor do sn
+		ModificationItem [] itens = new ModificationItem[1];
+		itens[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("sn", snNew));
+		ldapTree.modify(dn, itens);
+		
+		// faz a consulta novamente do valor do atributo
+		result = ldapTree.search("(sAMAccountName=usuario)", "sn");
+		assertTrue("Usuário \"usuario\" não foi encontrado mesmo depois de ter sido alterado um atributo dele neste instante o.O", result.hasMoreElements());
+		entry = result.nextElement();
+		attr = entry.getAttributes().get("sn");
+		assertNotNull("Usuário \"usuario\" não possui o atributo \"sn\" ajustado sendo que este acabou de ser modificado", attr);
+		
+		String receivedSn = (String) attr.get();
+		
+		// verifica se o atributo foi modificado
+		assertEquals(
+				String.format("O valor de \"sn\" do usuário não foi modificado. Valor lido: %s", receivedSn),
+				receivedSn,
+				snNew);
+		
+		// ajusta o valor anterior
+		itens[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("sn", sn));
+		ldapTree.modify(dn, itens);
+			
+		
+		// desconecta
+		ldapTree.disconnect();
+	}
 }
