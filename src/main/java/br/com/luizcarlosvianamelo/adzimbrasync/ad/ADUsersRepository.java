@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.NamingEnumeration;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
@@ -173,5 +176,30 @@ public class ADUsersRepository {
 			searchQuery += "(mail=*)";
 
 		return this.queryUsers(searchQuery);
+	}
+	
+	/**
+	 * Função que realiza a mudança da senha de um usuário no AD. Esta
+	 * funcionalidade funcionará apenas se for estabelecida uma conexão segura
+	 * com o servidor.
+	 * @param user O objeto do usuário que terá a sua senha alterada. O campo
+	 * <code>distinguishedName</code> deverá estar ajustado com o DN do usuário.
+	 * @param newPassword A string contendo a nova senha do usuário.
+	 * @throws Exception Lança uma exceção caso não for possível alterar a senha.
+	 */
+	public void changeUserPassword(ADUser user, String newPassword) throws Exception {
+		/*
+		 * A senha deverá ser codificada em UTF-16 e entre aspas para que ela
+		 * seja alterada no servidor.
+		 */
+		String quotedPassword = String.format("\"%s\"", newPassword);
+		
+		// codifica para UTF-16
+		byte[] encodedPassword = quotedPassword.getBytes("UTF-16LE");
+		
+		// ajusta a senha
+		this.adTree.modify(user.getDistinguishedName(),
+				new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+						new BasicAttribute("unicodePwd", encodedPassword)));
 	}
 }

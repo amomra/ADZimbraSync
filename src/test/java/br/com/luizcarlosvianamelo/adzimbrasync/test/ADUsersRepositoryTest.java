@@ -18,6 +18,8 @@ public class ADUsersRepositoryTest {
 
 	private ADTree adTree;
 
+	private ADUsersRepository usersRep;
+
 	public ADUsersRepositoryTest() throws Exception {
 		// carrega as propriedades do teste
 		this.prop = new TestProperties();
@@ -31,6 +33,9 @@ public class ADUsersRepositoryTest {
 
 		// realiza a conexão
 		this.adTree.connect();
+
+		// pega o repositório de usuários
+		this.usersRep = this.adTree.getUsersRepository();
 	}
 
 	@Test
@@ -38,11 +43,8 @@ public class ADUsersRepositoryTest {
 
 		System.out.println("- queryUsers -----------------------");
 
-		// pega o repositório de usuários
-		ADUsersRepository usersRep = this.adTree.getUsersRepository();
-
 		// busca todos os usuários que possuem um e-mail
-		List<ADUser> users = usersRep.queryUsers("(mail=*)");
+		List<ADUser> users = this.usersRep.queryUsers("(mail=*)");
 		// verifica se todos os usuários possuem um e-mail
 		for (ADUser user : users) {
 			System.out.format("Nome: %s\n", user.getName());
@@ -54,7 +56,7 @@ public class ADUsersRepositoryTest {
 		System.out.println("- queryUsers - 2 -------------------");
 
 		// agora busca os usuários que possuem um e-mail ou seja o usuário administrador
-		users = usersRep.queryUsers("(|(mail=*)(name=Administrator))");
+		users = this.usersRep.queryUsers("(|(mail=*)(name=Administrator))");
 		// verifica se todos os usuários possuem um e-mail
 		for (ADUser user : users) {
 			System.out.format("Nome: %s\n", user.getName());
@@ -70,11 +72,8 @@ public class ADUsersRepositoryTest {
 
 		System.out.println("- queryUsersByName -----------------");
 
-		// pega o repositório de usuários
-		ADUsersRepository usersRep = this.adTree.getUsersRepository();
-
 		// busca todos os usuários que possuem a palavra "Usuário" no nome
-		List<ADUser> users = usersRep.queryUsersByName("*Usuário*", false);
+		List<ADUser> users = this.usersRep.queryUsersByName("*Usuário*", false);
 		// verifica se todos os usuário
 		for (ADUser user : users) {
 			System.out.format("Nome: %s | E-mail: %s\n", user.getName(), user.getMail());
@@ -90,15 +89,12 @@ public class ADUsersRepositoryTest {
 
 		System.out.println("- queryGroupMembers ----------------");
 
-		// pega o repositório de usuários
-		ADUsersRepository usersRep = this.adTree.getUsersRepository();
-
 		// pega o repositório de grupos para retornar o grupo de administradores
-		ADGroupsRepository groupsRep = adTree.getGroupsRepository();
+		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 		ADGroup adminGroup = groupsRep.getAdministratorsGroup();
 
 		// pega a lista de usuários deste grupo
-		List<ADUser> users = usersRep.queryGroupMembers(adminGroup, false);
+		List<ADUser> users = this.usersRep.queryGroupMembers(adminGroup, false);
 		// verifica se todos os usuários são membros do grupo
 		for (ADUser user : users) {
 			System.out.format("Nome: %s\n", user.getName());
@@ -106,5 +102,60 @@ public class ADUsersRepositoryTest {
 			if (!adminGroup.isMember(user))
 				fail(String.format("Usuário \"%s\" não é membro do grupo \"%s\"", user.getName(), adminGroup.getName()));
 		}
+	}
+
+	@Test
+	public void testChangeUserPassword() throws Exception {
+		/*
+		 * Neste caso não será utilizada a mesma conexão dos outros testes já
+		 * que para a mudança de senha é necessário uma conexão segura.
+		 */
+		// cria o objeto da conexão
+		ADTree adTree = new ADTree(
+				this.prop.getLDAPUrl(), 
+				this.prop.getLDAPSearchBase(),
+				this.prop.getLDAPSearchBindDn(),
+				this.prop.getLDAPSearchBindPassword());
+
+		// ajusta a pasta onde estão incluídos os certificados do servidor
+		adTree.setSSLCertificatesPath(
+				this.prop.getLDAPCertificatePath(),
+				this.prop.getLDAPCertificateFilePassword());
+
+		// realiza a conexão segura
+		adTree.connect(true);
+
+		// pega o repositório de usuários
+		ADUsersRepository usersRep = adTree.getUsersRepository();
+
+		// pega o usuário configurado
+		ADUser user = usersRep.queryUserByAccountName(this.prop.getADTestUserAccountName());
+		assertNotNull("O usuário configurado não existe", user);
+
+		// modifica a senha do usuário para "teste123" (o AD tem restrição de tamanho mínimo de senha)
+		usersRep.changeUserPassword(user, "teste123");
+
+		// desconecta
+		adTree.disconnect();
+
+		// e tenta reconectar com o usuário modificado e sua nova senha
+		adTree.setLdapSearchBindDn(user.getDistinguishedName());
+		adTree.setLdapSearchBindPassword("teste123");
+		adTree.connect();
+
+		// verifica se está conectado
+		assertTrue("Não conseguiu se conectar com o usuário e a sua nova senha", adTree.isConnected());
+
+		// desconecta
+		adTree.disconnect();
+
+		// retorna a senha para o valor anterior
+		adTree.setLdapSearchBindDn(this.prop.getLDAPSearchBindDn());
+		adTree.setLdapSearchBindPassword(this.prop.getLDAPSearchBindPassword());
+		adTree.connect(true);
+		usersRep.changeUserPassword(user, this.prop.getADTestUserPassword());
+
+		// desconecta
+		adTree.disconnect();
 	}
 }
