@@ -1,8 +1,10 @@
 package br.com.luizcarlosvianamelo.adzimbrasync;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.zimbra.ADChangePasswordListener;
+import br.com.luizcarlosvianamelo.adzimbrasync.zimbra.ADCustomAuth;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.account.ldap.ChangePasswordListener;
 import com.zimbra.cs.extension.ExtensionException;
 import com.zimbra.cs.extension.ZimbraExtension;
@@ -36,6 +38,8 @@ public class ADZimbraSync implements ZimbraExtension {
 	public void init() throws ExtensionException, ServiceException {
 		// registra o objeto que irá tratar a mudança de senha do usuário no AD
 		ChangePasswordListener.register("ADZimbraSyncPasswordChanger", new ADChangePasswordListener());
+		// registra o método de autenticação do AD
+		ZimbraCustomAuth.register("ad_ext", new ADCustomAuth());
 	}
 	
 	/**

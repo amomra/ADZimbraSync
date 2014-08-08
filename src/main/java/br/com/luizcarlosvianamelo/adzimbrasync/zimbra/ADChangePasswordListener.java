@@ -61,6 +61,9 @@ public class ADChangePasswordListener extends ChangePasswordListener {
 					ldapSearchBase,
 					ldapAdminBindDn,
 					ldapAdminBindPassword);
+			// ajusta a pasta de certificados
+			adTree.setSSLCertificatesPath("/opt/zimbra/java/jre/lib/security/cacerts", "changeit");
+			
 			adTree.connect(true);
 			
 			// busca o usuário no AD
