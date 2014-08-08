@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="ADZimbraSync" default="run_build">
+
+    <property name="outJar" value="target/ADZimbraSync.jar" />
+
+    <target name="run_build" depends="delete_old_jar,create_dirs,create_manifest,create_jar,delete_temp_dirs" />
+
+    <target name="delete_old_jar">
+        <delete file="${outJar}" />
+    </target>
+
+    <target name="create_dirs">
+        <mkdir dir="jar_temp" />
+    </target>
+
+    <target name="delete_temp_dirs">
+        <delete dir="jar_temp" />
+    </target>
+
+    <target name="create_manifest">
+        <manifest file="jar_temp/MANIFEST.MF">
+            <attribute name="Manifest-Version" value="1.0" />
+            <attribute name="Zimbra-Extension-Class" value="br.com.luizcarlosvianamelo.adzimbrasync.ADZimbraSync" />
+        </manifest>
+    </target>
+
+    <target name="create_jar">
+        <jar destfile="${outJar}" manifest="jar_temp/MANIFEST.MF" basedir="bin" />
+    </target>
+</project>

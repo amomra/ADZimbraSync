@@ -15,6 +15,7 @@ public class TestProperties {
 	private String ldapCertificatePath;
 	private String ldapCertificateFilePassword;
 
+	private String adTestUserDomain;
 	private String adTestUserAccountName;
 	private String adTestUserPassword;
 
@@ -34,6 +35,7 @@ public class TestProperties {
 		this.ldapCertificatePath = prop.getProperty("ldap.certificatePath");
 		this.ldapCertificateFilePassword = prop.getProperty("ldap.certificateFilePassword");
 
+		this.adTestUserDomain = prop.getProperty("ad.testUserAccountDomain");
 		this.adTestUserAccountName = prop.getProperty("ad.testUserAccountName");
 		this.adTestUserPassword = prop.getProperty("ad.testUserPassword");
 	}
@@ -60,6 +62,10 @@ public class TestProperties {
 
 	public String getLDAPCertificateFilePassword() {
 		return ldapCertificateFilePassword;
+	}
+
+	public String getADTestUserDomain() {
+		return adTestUserDomain;
 	}
 
 	public String getADTestUserAccountName() {
