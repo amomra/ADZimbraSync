@@ -39,7 +39,7 @@ public class ADZimbraSync implements ZimbraExtension {
 		// registra o objeto que irá tratar a mudança de senha do usuário no AD
 		ChangePasswordListener.register("ADZimbraSyncPasswordChanger", new ADChangePasswordListener());
 		// registra o método de autenticação do AD
-		ZimbraCustomAuth.register("ad_ext", new ADCustomAuth());
+		ZimbraCustomAuth.register("ad", new ADCustomAuth());
 	}
 	
 	/**
