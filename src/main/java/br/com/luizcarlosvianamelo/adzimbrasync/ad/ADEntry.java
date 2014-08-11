@@ -1,11 +1,13 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.directory.SearchResult;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPDateParser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 
 /**
@@ -39,6 +41,9 @@ public class ADEntry extends LDAPEntry {
 	
 	@LDAPAttribute( name = "memberOf" )
 	protected List<String> memberOfGroups;
+	
+	@LDAPAttribute( attributeParser = LDAPDateParser.class )
+	protected Date whenChanged;
 	
 	/**
 	 * Construtor padrão da classe. Os atributos desta são inicializadas com o
@@ -132,6 +137,20 @@ public class ADEntry extends LDAPEntry {
 		this.memberOfGroups = memberOfGroups;
 	}
 	
+	/**
+	 * Retorna a data e horário da última modificação da entrada.
+	 */
+	public Date getWhenChanged() {
+		return whenChanged;
+	}
+
+	/**
+	 * Ajusta a data e horário da última modificação da entrada.
+	 */
+	public void setWhenChanged(Date whenChanged) {
+		this.whenChanged = whenChanged;
+	}
+
 	/**
 	 * Função privada que verifica se a entrada pertence a um determinado grupo
 	 * a partir do seu DN.

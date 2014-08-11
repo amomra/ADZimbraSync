@@ -97,7 +97,7 @@ public class ADUsersRepositoryTest {
 		List<ADUser> users = this.usersRep.queryGroupMembers(adminGroup, false);
 		// verifica se todos os usuários são membros do grupo
 		for (ADUser user : users) {
-			System.out.format("Nome: %s\n", user.getName());
+			System.out.format("Nome: %s | Ult. Mod.: %s\n", user.getName(), user.getWhenChanged().toString());
 
 			if (!adminGroup.isMember(user))
 				fail(String.format("Usuário \"%s\" não é membro do grupo \"%s\"", user.getName(), adminGroup.getName()));
