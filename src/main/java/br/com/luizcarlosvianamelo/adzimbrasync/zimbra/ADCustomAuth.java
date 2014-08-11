@@ -14,7 +14,7 @@ import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.ldap.LdapException;
 
 /**
- * Classe utilizada para realizar a autenticaÁ„o de um usu·rio de um domÌnio com
+ * Classe utilizada para realizar a autentica√ß√£o de um usu√°rio de um dom√≠nio com
  * o servidor AD configurado para provisionamento.
  * 
  * @author Luiz Carlos Viana Melo
@@ -29,64 +29,64 @@ public class ADCustomAuth extends ZimbraCustomAuth {
 	}
 
 	/**
-	 * FunÁ„o privada que faz o tratamento do erro retornado pela funÁ„o de
-	 * autenticaÁ„o em busca de mensagens de erro do AD.
-	 * @param acct O objeto da conta do usu·rio no Zimbra.
-	 * @param ex A exceÁ„o lanÁada pela funÁ„o de autenticaÁ„o.
-	 * @throws ServiceException RelanÁa a exceÁ„o passada no par‚metro
-	 * <code>ex</code> caso ela n„o conter um cÛdigo retornado pelo AD.
+	 * Fun√ß√£o privada que faz o tratamento do erro retornado pela fun√ß√£o de
+	 * autentica√ß√£o em busca de mensagens de erro do AD.
+	 * @param acct O objeto da conta do usu√°rio no Zimbra.
+	 * @param ex A exce√ß√£o lan√ßada pela fun√ß√£o de autentica√ß√£o.
+	 * @throws ServiceException Relan√ßa a exce√ß√£o passada no par√¢metro
+	 * <code>ex</code> caso ela n√£o conter um c√≥digo retornado pelo AD.
 	 */
 	private void handleAuthenticationException(Account acct, AccountServiceException ex)
 			throws ServiceException {
 		/*
-		 * Aqui ser· feita a verificaÁ„o da necessidade de alteraÁ„o de
-		 * senha por parte do usu·rio na prÛxima efetuaÁ„o de login. Isto
-		 * sÛ pode ser feito atravÈs da verificaÁ„o da mensagem da exceÁ„o
-		 * que ser· lanÁada pela funÁ„o.
+		 * Aqui ser√° feita a verifica√ß√£o da necessidade de altera√ß√£o de
+		 * senha por parte do usu√°rio na pr√≥xima efetua√ß√£o de login. Isto
+		 * s√≥ pode ser feito atrav√©s da verifica√ß√£o da mensagem da exce√ß√£o
+		 * que ser√° lan√ßada pela fun√ß√£o.
 		 */
 		Throwable cause = ex.getCause(); 
-		// verifica se È uma exceÁ„o do LDAP e se tem a mensagem tem o cÛdigo de mudanÁa de senha
+		// verifica se √© uma exce√ß√£o do LDAP e se tem a mensagem tem o c√≥digo de mudan√ßa de senha
 		if (cause != null &&
 				cause instanceof LdapException &&
 				cause.getMessage().contains("NT_STATUS_PASSWORD_MUST_CHANGE")) {
-			// marca o usu·rio para mudanÁa de senha
+			// marca o usu√°rio para mudan√ßa de senha
 			acct.setPasswordMustChange(true);
 		}
 		else
-			// caso n„o tenha sido lanÁada outra exceÁ„o, ent„o relanÁa a exceÁ„o atual.
+			// caso n√£o tenha sido lan√ßada outra exce√ß√£o, ent√£o relan√ßa a exce√ß√£o atual.
 			throw ex;		
 	}
 
 	/**
-	 * FunÁ„o que realiza a autenticaÁ„o do usu·rio com o servidor AD.
-	 * @param acct O objeto da conta do usu·rio no Zimbra.
-	 * @param password A senha digitada pelo usu·rio.
-	 * @param authCtxt O contexto de autenticaÁ„o.
+	 * Fun√ß√£o que realiza a autentica√ß√£o do usu√°rio com o servidor AD.
+	 * @param acct O objeto da conta do usu√°rio no Zimbra.
+	 * @param password A senha digitada pelo usu√°rio.
+	 * @param authCtxt O contexto de autentica√ß√£o.
 	 * @param mArgs Argumentos.
-	 * @throws Exception LanÁa exceÁ„o caso n„o foi possÌvel autenticar o
-	 * usu·rio devido aos nome de usu·rio e/ou senha inv·lidos. TambÈm lanÁa
-	 * quando ocorre um problema de comunicaÁ„o.
+	 * @throws Exception Lan√ßa exce√ß√£o caso n√£o foi poss√≠vel autenticar o
+	 * usu√°rio devido aos nome de usu√°rio e/ou senha inv√°lidos. Tamb√©m lan√ßa
+	 * quando ocorre um problema de comunica√ß√£o.
 	 */
 	@Override
 	public void authenticate(Account acct, String password,
 			Map<String, Object> authCtxt, List<String> mArgs) throws Exception {
 		try {
-			// deixa que a prÛpria classe de provisioning do Zimbra faz a autenticaÁ„o
+			// deixa que a pr√≥pria classe de provisioning do Zimbra faz a autentica√ß√£o
 			LdapProv prov = (LdapProv) Provisioning.getInstance();
 			
-			// pega o domÌnio da conta
+			// pega o dom√≠nio da conta
 			Domain domain = prov.getDomain(acct);
 			
 			// faz a chamada
 			prov.externalLdapAuth(domain, AuthMech.custom , acct, password, authCtxt);
 		} catch (AccountServiceException ex) {
-			// trata a exceÁ„o
+			// trata a exce√ß√£o
 			this.handleAuthenticationException(acct, ex);
 		}
 	}
 
 	/**
-	 * Informa que È necess·rio verificar o estado da senha do usu·rio.
+	 * Informa que √© necess√°rio verificar o estado da senha do usu√°rio.
 	 */
 	@Override
 	public boolean checkPasswordAging() {

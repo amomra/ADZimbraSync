@@ -9,9 +9,9 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
  * Classe que representa uma entrada do AD que simboliza um grupo. Este grupo
- * pode ser um grupo de seguranÁa ou uma lista de distribuiÁ„o. Um objeto
+ * pode ser um grupo de seguran√ßa ou uma lista de distribui√ß√£o. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
- * atravÈs da chamada da funÁ„o de convers„o
+ * atrav√©s da chamada da fun√ß√£o de convers√£o
  * {@link LDAPConverter#convert(Class, SearchResult) convert}.
  * 
  * @author Luiz Carlos Viana Melo
@@ -23,8 +23,8 @@ public class ADGroup extends ADEntry {
 	private List<String> members;
 	
 	/**
-	 * Construtor padr„o da classe. Este inicializa os atributos com o valor
-	 * padr„o <code>null</code>.
+	 * Construtor padr√£o da classe. Este inicializa os atributos com o valor
+	 * padr√£o <code>null</code>.
 	 */
 	public ADGroup() {
 	}
@@ -44,11 +44,11 @@ public class ADGroup extends ADEntry {
 	}
 	
 	/**
-	 * FunÁ„o privada que verifica se uma entrada com o determinado DN pertence
+	 * Fun√ß√£o privada que verifica se uma entrada com o determinado DN pertence
 	 * a este grupo.
 	 * @param dn O DN da entrada a ser checada.
 	 * @return Retorna <code>true</code> caso a entrada com o DN passado
-	 * pertencer ao grupo. Caso contr·rio, retorna <code>false</code>.
+	 * pertencer ao grupo. Caso contr√°rio, retorna <code>false</code>.
 	 */
 	private boolean isMember(String dn) {
 		// verifica a lista de membros do grupo
@@ -62,13 +62,13 @@ public class ADGroup extends ADEntry {
 	}
 
 	/**
-	 * FunÁ„o que verifica se uma entrada do AD pertence a este grupo.
+	 * Fun√ß√£o que verifica se uma entrada do AD pertence a este grupo.
 	 * @param adEntry A entrada a ser checada.
 	 * @return Retorna <code>true</code> caso a entrada pertencer ao grupo. Caso
-	 * contr·rio, retorna <code>false</code>.
+	 * contr√°rio, retorna <code>false</code>.
 	 */
 	public boolean isMember(ADEntry adEntry) {
-		// verifica se o DN da entrada est· na lista
+		// verifica se o DN da entrada est√° na lista
 		return this.isMember(adEntry.getDistinguishedName());
 	}
 }

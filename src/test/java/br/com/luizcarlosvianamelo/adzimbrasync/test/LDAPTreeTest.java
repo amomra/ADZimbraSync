@@ -29,18 +29,18 @@ public class LDAPTreeTest {
 
 	@Test
 	public void testConnect() throws NamingException {
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		LDAPTree ldapTree = new LDAPTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// realiza a conex„o
+		// realiza a conex√£o
 		ldapTree.connect();
 
-		// testa se est· conectado
-		assertTrue("N„o se conectou com o servidor.", ldapTree.isConnected());
+		// testa se est√° conectado
+		assertTrue("N√£o se conectou com o servidor.", ldapTree.isConnected());
 
 		// desconecta
 		ldapTree.disconnect();
@@ -48,23 +48,23 @@ public class LDAPTreeTest {
 
 	@Test
 	public void testConnectSsl() throws Exception {
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		LDAPTree ldapTree = new LDAPTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// ajusta a pasta onde est„o incluÌdos os certificados do servidor
+		// ajusta a pasta onde est√£o inclu√≠dos os certificados do servidor
 		ldapTree.setSSLCertificatesPath(
 				this.prop.getLDAPCertificatePath(),
 				this.prop.getLDAPCertificateFilePassword());
 
-		// tenta fazer uma conex„o segura
+		// tenta fazer uma conex√£o segura
 		ldapTree.connect(true);
 
-		// verifica se est· conectado
-		assertTrue("N„o se conectou com o servidor atravÈs de uma conex„o segura.", ldapTree.isConnected());
+		// verifica se est√° conectado
+		assertTrue("N√£o se conectou com o servidor atrav√©s de uma conex√£o segura.", ldapTree.isConnected());
 
 		// desconecta
 		ldapTree.disconnect();
@@ -72,36 +72,36 @@ public class LDAPTreeTest {
 
 	@Test
 	public void testDisconnect() throws NamingException {
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		LDAPTree ldapTree = new LDAPTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// realiza a conex„o
+		// realiza a conex√£o
 		ldapTree.connect();
 
 		// desconecta
 		ldapTree.disconnect();
 
-		// testa se est· conectado
-		assertTrue("Ainda est· conectado com o servidor.", !ldapTree.isConnected());
+		// testa se est√° conectado
+		assertTrue("Ainda est√° conectado com o servidor.", !ldapTree.isConnected());
 	}
 
 	@Test
 	public void testSearch() throws Exception {
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		LDAPTree ldapTree = new LDAPTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// realiza a conex„o
+		// realiza a conex√£o
 		ldapTree.connect();
 
-		// faz a consulta do objectGUID dos usu·rios
+		// faz a consulta do objectGUID dos usu√°rios
 		NamingEnumeration<SearchResult> result = ldapTree.search("(objectCategory=Person)", "objectGUID", "whenCreated");
 
 		while (result.hasMoreElements()) {
@@ -123,34 +123,34 @@ public class LDAPTreeTest {
 
 	@Test
 	public void testModify() throws Exception {
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		LDAPTree ldapTree = new LDAPTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// realiza a conex„o
+		// realiza a conex√£o
 		ldapTree.connect();
 		
-		// faz a consulta do sobrenome do usu·rio com o username "usuario"
+		// faz a consulta do sobrenome do usu√°rio com o username "usuario"
 		NamingEnumeration<SearchResult> result = ldapTree.search("(sAMAccountName=usuario)", "distinguishedName", "sn");
 		
-		// informa erro caso n„o encontre o usu·rio
-		assertTrue("Usu·rio \"usuario\" n„o foi encontrado. Crie ele para este teste", result.hasMoreElements());
+		// informa erro caso n√£o encontre o usu√°rio
+		assertTrue("Usu√°rio \"usuario\" n√£o foi encontrado. Crie ele para este teste", result.hasMoreElements());
 		
 		SearchResult entry = result.nextElement();
 		Attribute attr = entry.getAttributes().get("sn");
 		
 		// verifica se o atributo foi encontrado
-		assertNotNull("Usu·rio \"usuario\" n„o possui o atributo \"sn\" ajustado. Ajuste ele para o teste", attr);
+		assertNotNull("Usu√°rio \"usuario\" n√£o possui o atributo \"sn\" ajustado. Ajuste ele para o teste", attr);
 		
 		String sn = (String) attr.get();
 		String snNew = sn + " teste";
 		
-		// pega o DN do usu·rio
+		// pega o DN do usu√°rio
 		attr = entry.getAttributes().get("distinguishedName");
-		assertNotNull("Usu·rio \"usuario\" n„o possui o atributo \"distinguishedName\" ajustado. Tem alguma coisa muito errada o.O", attr);
+		assertNotNull("Usu√°rio \"usuario\" n√£o possui o atributo \"distinguishedName\" ajustado. Tem alguma coisa muito errada o.O", attr);
 		String dn = (String) attr.get();
 		
 		// ajusta o novo valor do sn
@@ -160,16 +160,16 @@ public class LDAPTreeTest {
 		
 		// faz a consulta novamente do valor do atributo
 		result = ldapTree.search("(sAMAccountName=usuario)", "sn");
-		assertTrue("Usu·rio \"usuario\" n„o foi encontrado mesmo depois de ter sido alterado um atributo dele neste instante o.O", result.hasMoreElements());
+		assertTrue("Usu√°rio \"usuario\" n√£o foi encontrado mesmo depois de ter sido alterado um atributo dele neste instante o.O", result.hasMoreElements());
 		entry = result.nextElement();
 		attr = entry.getAttributes().get("sn");
-		assertNotNull("Usu·rio \"usuario\" n„o possui o atributo \"sn\" ajustado sendo que este acabou de ser modificado", attr);
+		assertNotNull("Usu√°rio \"usuario\" n√£o possui o atributo \"sn\" ajustado sendo que este acabou de ser modificado", attr);
 		
 		String receivedSn = (String) attr.get();
 		
 		// verifica se o atributo foi modificado
 		assertEquals(
-				String.format("O valor de \"sn\" do usu·rio n„o foi modificado. Valor lido: %s", receivedSn),
+				String.format("O valor de \"sn\" do usu√°rio n√£o foi modificado. Valor lido: %s", receivedSn),
 				receivedSn,
 				snNew);
 		

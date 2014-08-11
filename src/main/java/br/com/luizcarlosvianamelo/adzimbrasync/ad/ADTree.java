@@ -3,9 +3,9 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPTree;
 
 /**
- * Classe que representa uma ·rvore do AD. Esta È utilizada para a consulta
- * dos grupos e usu·rios que est„o contidos na ·rvore atravÈs dos repositÛrios
- * de ambos. Por ser essencialmente uma ·rvore LDAP, esta herda caracterÌsticas
+ * Classe que representa uma √°rvore do AD. Esta √© utilizada para a consulta
+ * dos grupos e usu√°rios que est√£o contidos na √°rvore atrav√©s dos reposit√≥rios
+ * de ambos. Por ser essencialmente uma √°rvore LDAP, esta herda caracter√≠sticas
  * da classe {@link LDAPTree}.
  * 
  * @author Luiz Carlos Viana Melo
@@ -18,8 +18,8 @@ public class ADTree extends LDAPTree {
 	private ADGroupsRepository groupsRepository;
 	
 	/**
-	 * Construtor padr„o da classe. Este inicializa os par‚metros de conex„o
-	 * com valores padrıes.
+	 * Construtor padr√£o da classe. Este inicializa os par√¢metros de conex√£o
+	 * com valores padr√µes.
 	 */
 	public ADTree() {
 		this("",  "", "", "");
@@ -27,11 +27,11 @@ public class ADTree extends LDAPTree {
 	
 	/**
 	 * Construtor parametrizado da classe.
-	 * @param ldapUrl O endereÁo do servidor AD.
-	 * @param ldapSearchBase A base de busca na ·rvore do LDAP.
-	 * @param ldapSearchBindDn O DN do usu·rio que pode realizar consultas sobre
-	 * a ·rvore.
-	 * @param ldapSearchBindPassword A senha do usu·rio de consulta.
+	 * @param ldapUrl O endere√ßo do servidor AD.
+	 * @param ldapSearchBase A base de busca na √°rvore do LDAP.
+	 * @param ldapSearchBindDn O DN do usu√°rio que pode realizar consultas sobre
+	 * a √°rvore.
+	 * @param ldapSearchBindPassword A senha do usu√°rio de consulta.
 	 */
 	public ADTree(String ldapUrl,
 			String ldapSearchBase,
@@ -39,13 +39,13 @@ public class ADTree extends LDAPTree {
 			String ldapSearchBindPassword) {
 		super(ldapUrl, ldapSearchBase, ldapSearchBindDn, ldapSearchBindPassword);
 		
-		// inicializa os repositÛrios
+		// inicializa os reposit√≥rios
 		this.usersRepository = new ADUsersRepository(this);
 		this.groupsRepository = new ADGroupsRepository(this);
 	}
 
 	/**
-	 * Retorna o objeto que representa o repositÛrio de usu·rios da ·rvore do
+	 * Retorna o objeto que representa o reposit√≥rio de usu√°rios da √°rvore do
 	 * AD.
 	 * @see ADUsersRepository
 	 */
@@ -54,7 +54,7 @@ public class ADTree extends LDAPTree {
 	}
 
 	/**
-	 * Retorna o objeto que representa o repositÛrio de grupos da ·rvore do
+	 * Retorna o objeto que representa o reposit√≥rio de grupos da √°rvore do
 	 * AD.
 	 * @see ADGroupsRepository
 	 */

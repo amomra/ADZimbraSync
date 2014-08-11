@@ -11,12 +11,12 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPDateParser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 
 /**
- * Classe que representa uma entrada da ·rvore LDAP do Active Directory. Esta
- * entrada pode representar v·rias entidades do AD como, por exemplo,
- * computadores, usu·rios e grupos. Esta classe contÈm os atributos da ·rvore
- * que s„o comuns aos v·rios tipos de entidades suportadas pelo AD. Um objeto
+ * Classe que representa uma entrada da √°rvore LDAP do Active Directory. Esta
+ * entrada pode representar v√°rias entidades do AD como, por exemplo,
+ * computadores, usu√°rios e grupos. Esta classe cont√©m os atributos da √°rvore
+ * que s√£o comuns aos v√°rios tipos de entidades suportadas pelo AD. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
- * atravÈs da chamada da funÁ„o de convers„o
+ * atrav√©s da chamada da fun√ß√£o de convers√£o
  * {@link LDAPConverter#convert(Class, SearchResult) convert}.
  * 
  * @author Luiz Carlos Viana Melo
@@ -46,8 +46,8 @@ public class ADEntry extends LDAPEntry {
 	protected Date whenChanged;
 	
 	/**
-	 * Construtor padr„o da classe. Os atributos desta s„o inicializadas com o
-	 * valor padr„o <code>null</code>.
+	 * Construtor padr√£o da classe. Os atributos desta s√£o inicializadas com o
+	 * valor padr√£o <code>null</code>.
 	 */
 	public ADEntry() {
 		
@@ -110,14 +110,14 @@ public class ADEntry extends LDAPEntry {
 	}
 
 	/**
-	 * Retorna o endereÁo de e-mail da entrada.
+	 * Retorna o endere√ßo de e-mail da entrada.
 	 */
 	public String getMail() {
 		return mail;
 	}
 
 	/**
-	 * Ajusta o endereÁo de e-mail da entrada.
+	 * Ajusta o endere√ßo de e-mail da entrada.
 	 */
 	public void setMail(String mail) {
 		this.mail = mail;
@@ -138,25 +138,25 @@ public class ADEntry extends LDAPEntry {
 	}
 	
 	/**
-	 * Retorna a data e hor·rio da ˙ltima modificaÁ„o da entrada.
+	 * Retorna a data e hor√°rio da √∫ltima modifica√ß√£o da entrada.
 	 */
 	public Date getWhenChanged() {
 		return whenChanged;
 	}
 
 	/**
-	 * Ajusta a data e hor·rio da ˙ltima modificaÁ„o da entrada.
+	 * Ajusta a data e hor√°rio da √∫ltima modifica√ß√£o da entrada.
 	 */
 	public void setWhenChanged(Date whenChanged) {
 		this.whenChanged = whenChanged;
 	}
 
 	/**
-	 * FunÁ„o privada que verifica se a entrada pertence a um determinado grupo
+	 * Fun√ß√£o privada que verifica se a entrada pertence a um determinado grupo
 	 * a partir do seu DN.
 	 * @param groupDn O DN do grupo a ser checado.
 	 * @return Retorna <code>true</code> caso a entrada pertencer ao grupo. Caso
-	 * contr·rio, retorna <code>false</code>.
+	 * contr√°rio, retorna <code>false</code>.
 	 */
 	private boolean isMemberOf(String groupDn) {
 		// verifica a lista de grupos aos quais este grupo pertence
@@ -170,13 +170,13 @@ public class ADEntry extends LDAPEntry {
 	}
 
 	/**
-	 * FunÁ„o que verifica se a entrada pertence ao grupo.
+	 * Fun√ß√£o que verifica se a entrada pertence ao grupo.
 	 * @param group O grupo a ser checado.
 	 * @return Retorna <code>true</code> caso a entrada pertencer ao grupo. Caso
-	 * contr·rio, retorna <code>false</code>.
+	 * contr√°rio, retorna <code>false</code>.
 	 */
 	public boolean isMemberOf(ADGroup group) {
-		// verifica se o DN do grupo est· na lista
+		// verifica se o DN do grupo est√° na lista
 		return this.isMemberOf(group.getDistinguishedName());
 	}
 }

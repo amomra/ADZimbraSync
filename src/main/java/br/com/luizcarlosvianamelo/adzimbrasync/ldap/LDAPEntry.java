@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Classe que representa uma entidade da ·rvore LDAP, onde os atributos anotados
- * com a anotaÁ„o {@link LDAPAttribute} representam os campos associados aos
+ * Classe que representa uma entidade da √°rvore LDAP, onde os atributos anotados
+ * com a anota√ß√£o {@link LDAPAttribute} representam os campos associados aos
  * atributos de uma entidade no LDAP.
  * 
  * @author Luiz Carlos Viana Melo
@@ -26,24 +26,24 @@ public class LDAPEntry {
 	}
 	
 	/**
-	 * FunÁ„o privada que retorna a lista contendo todos os campos declarados
+	 * Fun√ß√£o privada que retorna a lista contendo todos os campos declarados
 	 * nas classes pertecentes a hierarquia.
 	 * @param clazz A classe inicial.
 	 * @return A lista de campos de todas as classes.
 	 */
 	private List<Field> getAllClassesFields(Class<?> clazz) {
 		/*
-		 * Como a funÁ„o getFields n„o retorna os campos que n„o s„o publicos e
-		 * a funÁ„o getDeclaredFields n„o retorna os campos herdados da classe
-		 * pai È necess·rio fazer uma funÁ„o que percorra toda hierarquia de
+		 * Como a fun√ß√£o getFields n√£o retorna os campos que n√£o s√£o publicos e
+		 * a fun√ß√£o getDeclaredFields n√£o retorna os campos herdados da classe
+		 * pai √© necess√°rio fazer uma fun√ß√£o que percorra toda hierarquia de
 		 * classes e coletar os campos de cada uma delas.
 		 */
 		
-		// a condiÁ„o de parada da recurs„o ser· quando a busca alcanÁar esta
+		// a condi√ß√£o de parada da recurs√£o ser√° quando a busca alcan√ßar esta
 		// classe
 		if (clazz != LDAPEntry.class) {
 			// faz a chamada recursiva para a classe pai da classe atual
-			// para retornar a lista preenchida atÈ o momento
+			// para retornar a lista preenchida at√© o momento
 			List<Field> fields = this.getAllClassesFields(clazz.getSuperclass());
 			
 			// e preenche a lista com os campos da classe atual
@@ -52,17 +52,17 @@ public class LDAPEntry {
 			return fields;
 		}
 		
-		// retorna a lista vazia j· que esta classe n„o tem atributos do LDAP
+		// retorna a lista vazia j√° que esta classe n√£o tem atributos do LDAP
 		// a serem coletados
 		return new ArrayList<>();
 	}
 	
 	/**
 	 * Retorna a lista de atributos do LDAP com os campos associados da classe.
-	 * Esta lista È montada a partir da lista de campos anotados com a anotaÁ„o
+	 * Esta lista √© montada a partir da lista de campos anotados com a anota√ß√£o
 	 * {@link LDAPAttribute}.
 	 * 
-	 * @return A lista associativa onde a chave È o nome do atributo do LDAP e
+	 * @return A lista associativa onde a chave √© o nome do atributo do LDAP e
 	 * o valor o campo da classe associado ao atributo.
 	 */
 	public Map<String, Field> getLDAPAttributesFields() {
@@ -86,7 +86,7 @@ public class LDAPEntry {
 			}
 		}
 
-		// lanÁa exceÁ„o se n„o tiver atributos a serem coletados
+		// lan√ßa exce√ß√£o se n√£o tiver atributos a serem coletados
 		if (fields.size() == 0)
 			throw new InvalidParameterException("LDAP Entry has no attributes to be returned");
 		return fields;

@@ -10,13 +10,13 @@ import com.zimbra.cs.extension.ExtensionException;
 import com.zimbra.cs.extension.ZimbraExtension;
 
 /**
- * Extens„o do Zimbra que realiza o sincronismo das contas e listas de
- * distribuÌÁ„o disponÌveis no AD com a base de dados do Zimbra. As informaÁıes
- * dos usu·rios e das listas de distribuÌÁ„o ser„o coletadas apenas do AD, sendo
- * que quaisquer alteraÁıes nestas atravÈs do Zimbra ser„o descartadas durante a
- * sincronizaÁ„o. Esta tambÈm È respons·vel em gerenciar a forma de autenticaÁ„o
- * deste usu·rios com a base do AD, assim como o sincronismo da senha do
- * usu·rio quando esta for alterada.
+ * Extens√£o do Zimbra que realiza o sincronismo das contas e listas de
+ * distribu√≠√ß√£o dispon√≠veis no AD com a base de dados do Zimbra. As informa√ß√µes
+ * dos usu√°rios e das listas de distribu√≠√ß√£o ser√£o coletadas apenas do AD, sendo
+ * que quaisquer altera√ß√µes nestas atrav√©s do Zimbra ser√£o descartadas durante a
+ * sincroniza√ß√£o. Esta tamb√©m √© respons√°vel em gerenciar a forma de autentica√ß√£o
+ * deste usu√°rios com a base do AD, assim como o sincronismo da senha do
+ * usu√°rio quando esta for alterada.
  *  
  * @author Luiz Carlos Viana Melo
  *
@@ -31,19 +31,19 @@ public class ADZimbraSync implements ZimbraExtension {
 	}
 	
 	/**
-	 * FunÁ„o que realiza a inializaÁ„o da extens„o. Esta dever· iniciar a
+	 * Fun√ß√£o que realiza a inializa√ß√£o da extens√£o. Esta dever√° iniciar a
 	 * thread que realiza o sincronismo das contas.
 	 */
 	@Override
 	public void init() throws ExtensionException, ServiceException {
-		// registra o objeto que ir· tratar a mudanÁa de senha do usu·rio no AD
+		// registra o objeto que ir√° tratar a mudan√ßa de senha do usu√°rio no AD
 		ChangePasswordListener.register("ADZimbraSyncPasswordChanger", new ADChangePasswordListener());
-		// registra o mÈtodo de autenticaÁ„o do AD
+		// registra o m√©todo de autentica√ß√£o do AD
 		ZimbraCustomAuth.register("ad", new ADCustomAuth());
 	}
 	
 	/**
-	 * FunÁ„o que finaliza a extens„o.
+	 * Fun√ß√£o que finaliza a extens√£o.
 	 */
 	@Override
 	public void destroy() {
@@ -51,7 +51,7 @@ public class ADZimbraSync implements ZimbraExtension {
 	}
 
 	/**
-	 * Retorna o nome da extens„o.
+	 * Retorna o nome da extens√£o.
 	 */
 	@Override
 	public String getName() {

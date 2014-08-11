@@ -7,13 +7,13 @@ import java.util.List;
 import javax.naming.directory.Attribute;
 
 /**
- * Classe que realiza a convers„o do valor do atributo lido do LDAP para os
+ * Classe que realiza a convers√£o do valor do atributo lido do LDAP para os
  * tipos suportados pelo Java. A biblioteca de LDAP do Java usada neste projeto
  * retorna objetos do tipo <code>String</code> para todos os atributos lidos,
- * tornando necess·ria a realizaÁ„o da convers„o para tipos especÌficos do Java.
- * Esta classe faz a convers„o desta <code>String</code> para todos os tipos primitivos
- * utilizando as funÁıes <code>parse</code> de cada um deles. Caso n„o seja um
- * tipo primitivo, o objeto a ser convertido n„o ser· alterado.
+ * tornando necess√°ria a realiza√ß√£o da convers√£o para tipos espec√≠ficos do Java.
+ * Esta classe faz a convers√£o desta <code>String</code> para todos os tipos primitivos
+ * utilizando as fun√ß√µes <code>parse</code> de cada um deles. Caso n√£o seja um
+ * tipo primitivo, o objeto a ser convertido n√£o ser√° alterado.
  * 
  * @author Luiz Carlos Viana Melo
  *
@@ -27,24 +27,24 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um objeto Java.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsObject(Field field, Object obj, Attribute attribute) throws Exception {
 		/*
-		 * Por padr„o, a biblioteca de LDAP do Java trata todos os atributos
+		 * Por padr√£o, a biblioteca de LDAP do Java trata todos os atributos
 		 * como String.
 		 * Ref: http://docs.oracle.com/javase/jndi/tutorial/ldap/misc/attrs.html
 		 */
 		field.setAccessible(true);
 		
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de strings com os valores dos campos
 			List<String> attrValues = new ArrayList<>();
@@ -60,19 +60,19 @@ public class LDAPAttributeParser {
 	}
 
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um booleano.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsBoolean(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Boolean com os valores dos campos
 			List<Boolean> attrValues = new ArrayList<>();
@@ -88,19 +88,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um byte.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsByte(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Byte com os valores dos campos
 			List<Byte> attrValues = new ArrayList<>();
@@ -116,19 +116,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um caracter.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsChar(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Character com os valores dos campos
 			List<Character> attrValues = new ArrayList<>();
@@ -144,19 +144,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 16 bits.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsShort(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Short com os valores dos campos
 			List<Short> attrValues = new ArrayList<>();
@@ -172,19 +172,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 32 bits.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsInt(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Integer com os valores dos campos
 			List<Integer> attrValues = new ArrayList<>();
@@ -200,19 +200,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 64 bits.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsLong(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Long com os valores dos campos
 			List<Long> attrValues = new ArrayList<>();
@@ -228,19 +228,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um ponto flutuante de 32 bits.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsFloat(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Float com os valores dos campos
 			List<Float> attrValues = new ArrayList<>();
@@ -256,19 +256,19 @@ public class LDAPAttributeParser {
 	}
 	
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um ponto flutuante de 64 bits.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsDouble(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de Double com os valores dos campos
 			List<Double> attrValues = new ArrayList<>();

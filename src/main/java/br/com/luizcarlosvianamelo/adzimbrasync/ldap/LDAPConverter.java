@@ -13,10 +13,10 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchResult;
 
 /**
- * Classe respons·vel em realizar a convers„o das entradas no LDAP em classes
- * Java. O mapeamento dos atributos do LDAP para os objetos È feito atravÈs da
- * utilizaÁ„o da anotaÁ„o {@link LDAPAttribute}, onde os campos dos objetos
- * anotados com esta ser„o preenchidos com os valores dos atributos
+ * Classe respons√°vel em realizar a convers√£o das entradas no LDAP em classes
+ * Java. O mapeamento dos atributos do LDAP para os objetos √© feito atrav√©s da
+ * utiliza√ß√£o da anota√ß√£o {@link LDAPAttribute}, onde os campos dos objetos
+ * anotados com esta ser√£o preenchidos com os valores dos atributos
  * correspondentes.
  * 
  * @author Luiz Carlos Viana Melo
@@ -25,20 +25,20 @@ import javax.naming.directory.SearchResult;
 public class LDAPConverter {
 
 	/**
-	 * FunÁ„o que realiza a convers„o de uma entrasda do LDAP retornado de uma
-	 * busca na ·rvore para um objeto Java.
+	 * Fun√ß√£o que realiza a convers√£o de uma entrasda do LDAP retornado de uma
+	 * busca na √°rvore para um objeto Java.
 	 * @param objType O objeto do tipo {@link Class} correspondente ao tipo do
-	 * objeto a ser retornado pela funÁ„o. O tipo do objeto dever· uma classe
+	 * objeto a ser retornado pela fun√ß√£o. O tipo do objeto dever√° uma classe
 	 * que herda diretamente ou indiretamente a classe {@link LDAPEntry}.
-	 * @param entry A entrada do LDAP que foi retornada na consulta que ser·
+	 * @param entry A entrada do LDAP que foi retornada na consulta que ser√°
 	 * convertida para o objeto.
 	 * @return O objeto gerado a partir dos atributos do LDAP.
-	 * @throws Exception LanÁa exceÁ„o quando n„o for possÌvel ajustar o valor
+	 * @throws Exception Lan√ßa exce√ß√£o quando n√£o for poss√≠vel ajustar o valor
 	 * de um campo do objeto.
 	 */
 	public static <ObjectType extends LDAPEntry>
 	ObjectType convert(Class<ObjectType> objType, SearchResult entry) throws Exception {
-		// cria uma inst‚ncia do objeto
+		// cria uma inst√¢ncia do objeto
 		ObjectType obj = objType.newInstance();
 
 		// pega a lista de atributos do LDAP e os campos da classe associados
@@ -52,11 +52,11 @@ public class LDAPConverter {
 			if (attr != null)
 			{
 				Field field = attrField.getValue();
-				// pega a anotaÁ„o informando a classe de convers„o do atributo
+				// pega a anota√ß√£o informando a classe de convers√£o do atributo
 				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
 				LDAPAttributeParser parser = (LDAPAttributeParser) attrAnn.attributeParser().newInstance();
 
-				// verifica o tipo para chamar a funÁ„o de convers„o
+				// verifica o tipo para chamar a fun√ß√£o de convers√£o
 				Type fieldType = field.getType();
 				// se for uma lista, pega o tipo interno
 				if (fieldType.equals(List.class))
@@ -88,16 +88,16 @@ public class LDAPConverter {
 	}
 
 	/**
-	 * FunÁ„o que cria o mapa de atributos do LDAP com os seus respectivos
+	 * Fun√ß√£o que cria o mapa de atributos do LDAP com os seus respectivos
 	 * valores de acordo com o mapeamento dos campos passado.
-	 * @param obj O objeto que ter· os seus campos mapeados para os atributos
-	 * do LDAP. Apenas os campos que est„o definidos no mapeamento ser„o lidos.
-	 * @param attrMap A definiÁ„o do mapeamento dos atributos do LDAP com os
-	 * campos do objeto. Caso haja v·rios mapeamentos para o mesmo atributo do
-	 * LDAP, apenas o ˙ltimo ser· considerado. 
+	 * @param obj O objeto que ter√° os seus campos mapeados para os atributos
+	 * do LDAP. Apenas os campos que est√£o definidos no mapeamento ser√£o lidos.
+	 * @param attrMap A defini√ß√£o do mapeamento dos atributos do LDAP com os
+	 * campos do objeto. Caso haja v√°rios mapeamentos para o mesmo atributo do
+	 * LDAP, apenas o √∫ltimo ser√° considerado. 
 	 * @return Retorna a lista associativa associando o atributo do LDAP com o
 	 * valor do campo.
-	 * @throws Exception LanÁa exceÁ„o quando n„o for possÌvel ler o valor do
+	 * @throws Exception Lan√ßa exce√ß√£o quando n√£o for poss√≠vel ler o valor do
 	 * campo do objeto passado.
 	 */
 	public static <ObjectType extends LDAPEntry>
@@ -108,9 +108,9 @@ public class LDAPConverter {
 		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
 		for (Entry<String, Field> attrField : attrFields.entrySet()) {
 			/*
-			 * Verifica a qual atributo do LDAP o campo dever· ser associado.
-			 * Caso n„o tenha sido feita a associaÁ„o do campo atual com o
-			 * atributo, o mesmo ser· ignorado.
+			 * Verifica a qual atributo do LDAP o campo dever√° ser associado.
+			 * Caso n√£o tenha sido feita a associa√ß√£o do campo atual com o
+			 * atributo, o mesmo ser√° ignorado.
 			 */
 			String attrName = attrMap.get(attrField.getKey());
 			if (attrName != null) {

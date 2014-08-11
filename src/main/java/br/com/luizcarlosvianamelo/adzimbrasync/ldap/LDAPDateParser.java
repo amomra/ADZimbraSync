@@ -10,8 +10,8 @@ import java.util.TimeZone;
 import javax.naming.directory.Attribute;
 
 /**
- * Classe respons·vel em fazer o parser de um Date a partir de um atributo do
- * LDAP. O formato padr„o da <code>String</code> de datas no LDAP È
+ * Classe respons√°vel em fazer o parser de um Date a partir de um atributo do
+ * LDAP. O formato padr√£o da <code>String</code> de datas no LDAP √©
  * "yyyyMMddHHmmss".
  * @author Luiz Carlos Viana Melo
  *
@@ -25,14 +25,14 @@ public class LDAPDateParser extends LDAPAttributeParser {
 	}
 
 	/**
-	 * FunÁ„o que faz o parser do objeto com o valor do atributo lido pela API
+	 * Fun√ß√£o que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um objeto Java.
-	 * Neste caso, o objeto a ser armazenado ser· do tipo {@link Date}.
-	 * @param field O campo do objeto que ir· receber o resultado da convers„o.
-	 * @param obj O objeto que ter· o seu campo alterado com o resultado da
-	 * convers„o.
+	 * Neste caso, o objeto a ser armazenado ser√° do tipo {@link Date}.
+	 * @param field O campo do objeto que ir√° receber o resultado da convers√£o.
+	 * @param obj O objeto que ter√° o seu campo alterado com o resultado da
+	 * convers√£o.
 	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception LanÁa uma exceÁ„o quando n„o for possÌvel ajustar o
+	 * @throws Exception Lan√ßa uma exce√ß√£o quando n√£o for poss√≠vel ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsObject(Field field, Object obj, Attribute attribute) throws Exception {
@@ -42,7 +42,7 @@ public class LDAPDateParser extends LDAPAttributeParser {
 		SimpleDateFormat dateFormater = new SimpleDateFormat("yyyyMMddHHmmss");
 		dateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-		// verifica se o tipo do campo È uma lista
+		// verifica se o tipo do campo √© uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de dates com os valores dos campos
 			List<Date> attrValues = new ArrayList<>();

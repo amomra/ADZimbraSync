@@ -14,8 +14,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.ChangePasswordListener;;
 
 /**
- * Classe respons·vel em realizar a mudanÁa da senha de um usu·rio no AD quando
- * esta operaÁ„o for realizada atravÈs do Zimbra.
+ * Classe respons√°vel em realizar a mudan√ßa da senha de um usu√°rio no AD quando
+ * esta opera√ß√£o for realizada atrav√©s do Zimbra.
  * 
  * @author Luiz Carlos Viana Melo
  *
@@ -30,32 +30,32 @@ public class ADChangePasswordListener extends ChangePasswordListener {
 	}
 			
 	/**
-	 * FunÁ„o que ser· chamada quando o processo de mudanÁa de senha for
-	 * realizado pelo Zimbra. Esta ir· fazer a mudanÁa da senha no AD.
+	 * Fun√ß√£o que ser√° chamada quando o processo de mudan√ßa de senha for
+	 * realizado pelo Zimbra. Esta ir√° fazer a mudan√ßa da senha no AD.
 	 * @param account O objeto da conta do Zimbra associada a conta do AD que
-	 * ter· a sua senha modificada.
+	 * ter√° a sua senha modificada.
 	 * @param newPassword A <code>String</code> contendo a senha a ser ajustada
 	 * no AD.
-	 * @param context Par‚metro n„o utilizado.
-	 * @param attrsToModify Par‚metro n„o utilizado.
+	 * @param context Par√¢metro n√£o utilizado.
+	 * @param attrsToModify Par√¢metro n√£o utilizado.
 	 */
 	@Override
 	public void preModify(Account account, String newPassword, Map context,
 			Map<String, Object> attrsToModify) throws ServiceException {
-		// captura as exceÁıes do LDAP e lanÁa as exceÁıes do Zimbra
+		// captura as exce√ß√µes do LDAP e lan√ßa as exce√ß√µes do Zimbra
 		try {
 			Provisioning prov = Provisioning.getInstance();
-			// pega as informaÁıes do domÌnio ao qual o usu·rio pertence
+			// pega as informa√ß√µes do dom√≠nio ao qual o usu√°rio pertence
 			Domain dom = prov.getDomain(account);
 			
-			// pega as configuraÁıes do LDAP para auto-provisioning
+			// pega as configura√ß√µes do LDAP para auto-provisioning
 			String ldapUrl = dom.getAutoProvLdapURL();
 			String ldapSearchBase = dom.getAutoProvLdapSearchBase();
-			// pega o usu·rio de administrador do LDAP
+			// pega o usu√°rio de administrador do LDAP
 			String ldapAdminBindDn = dom.getAutoProvLdapAdminBindDn();
 			String ldapAdminBindPassword = dom.getAutoProvLdapAdminBindPassword();
 			
-			// faz a conex„o segura com o servidor
+			// faz a conex√£o segura com o servidor
 			ADTree adTree = new ADTree(
 					ldapUrl,
 					ldapSearchBase,
@@ -66,15 +66,15 @@ public class ADChangePasswordListener extends ChangePasswordListener {
 			
 			adTree.connect(true);
 			
-			// busca o usu·rio no AD
+			// busca o usu√°rio no AD
 			ADUsersRepository rep = adTree.getUsersRepository();
 			ADUser user = rep.queryUserByAccountName(account.getUid());
 			
-			// se n„o encontrou o usu·rio no AD
+			// se n√£o encontrou o usu√°rio no AD
 			if (user == null)
 				throw AccountServiceException.NO_SUCH_ACCOUNT(account.getUid());
 			
-			// faz a mudanÁa da senha do usu·rio
+			// faz a mudan√ßa da senha do usu√°rio
 			rep.changeUserPassword(user, newPassword);
 			
 			// desconecta
@@ -86,12 +86,12 @@ public class ADChangePasswordListener extends ChangePasswordListener {
 	}
 	
 	/**
-	 * FunÁ„o que ser· chamada apÛs a mudanÁa da senha do usu·rio. Neste caso,
-	 * n„o È necess·rio realizar aÁıes apÛs a mudanÁa da senha.
+	 * Fun√ß√£o que ser√° chamada ap√≥s a mudan√ßa da senha do usu√°rio. Neste caso,
+	 * n√£o √© necess√°rio realizar a√ß√µes ap√≥s a mudan√ßa da senha.
 	 */
 	@Override
 	public void postModify(Account account, String newPassword, Map context) {
-		// n„o faz nada
+		// n√£o faz nada
 	}
 
 }

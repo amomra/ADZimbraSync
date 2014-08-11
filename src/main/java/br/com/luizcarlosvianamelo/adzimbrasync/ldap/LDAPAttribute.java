@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * AnotaÁ„o utilizada para definir que um atributo da classe tambÈm È um
- * atributo da entidade correspondente no LDAP. Ao fazer uma consulta ao LDAP È
- * possÌvel realizar a convers„o da entidade para um objeto de uma classe Java
- * onde os atributos da classe anotados ser„o preenchidos com os valores
- * correspondentes da ·rvore LDAP.
+ * Anota√ß√£o utilizada para definir que um atributo da classe tamb√©m √© um
+ * atributo da entidade correspondente no LDAP. Ao fazer uma consulta ao LDAP √©
+ * poss√≠vel realizar a convers√£o da entidade para um objeto de uma classe Java
+ * onde os atributos da classe anotados ser√£o preenchidos com os valores
+ * correspondentes da √°rvore LDAP.
  * 
  * @author Luiz Carlos Viana Melo
  *
@@ -21,15 +21,15 @@ public @interface LDAPAttribute {
 
 	/**
 	 * Propriedade que indica o nome do atributo no LDAP que o atributo da
-	 * classe est· associado. Caso esta propriedade esteja com o valor padr„o,
-	 * que È uma string vazia, ser· considerado o nome do atributo da classe.
+	 * classe est√° associado. Caso esta propriedade esteja com o valor padr√£o,
+	 * que √© uma string vazia, ser√° considerado o nome do atributo da classe.
 	 */
 	String name() default "";
 
 	/**
-	 * Propriedade que indica a classe do objeto que far· o parser do atributo
-	 * do LDAP para o tipo do campo. O valor padr„o È a classe
-	 * {@link LDAPAttributeParser}, sendo que esta trata os tipos n„o primitivos
+	 * Propriedade que indica a classe do objeto que far√° o parser do atributo
+	 * do LDAP para o tipo do campo. O valor padr√£o √© a classe
+	 * {@link LDAPAttributeParser}, sendo que esta trata os tipos n√£o primitivos
 	 * como <code>String</code>.
 	 */
 	Class<?> attributeParser() default LDAPAttributeParser.class;

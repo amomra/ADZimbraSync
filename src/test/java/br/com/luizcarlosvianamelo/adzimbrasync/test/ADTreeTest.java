@@ -20,28 +20,28 @@ public class ADTreeTest {
 	@Test
 	public void testConnect() throws Exception {
 		
-		// formata o nome do usu·rio do AD
+		// formata o nome do usu√°rio do AD
 		String username = String.format("%s@%s",
 				this.prop.getADTestUserAccountName(),
 				this.prop.getADTestUserDomain());
 
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		ADTree adTree = new ADTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
-				// conecta com um usu·rio do AD
+				// conecta com um usu√°rio do AD
 				username,
 				this.prop.getADTestUserPassword());
 
 		try {
-			// realiza a conex„o
+			// realiza a conex√£o
 			adTree.connect();
 
 			// desconecta
 			adTree.disconnect();
 
 		} catch (AuthenticationException ex) {
-			// sÛ para debugar
+			// s√≥ para debugar
 			throw ex;
 		}
 	}

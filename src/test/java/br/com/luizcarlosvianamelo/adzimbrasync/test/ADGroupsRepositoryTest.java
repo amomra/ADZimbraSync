@@ -22,14 +22,14 @@ public class ADGroupsRepositoryTest {
 		// carrega as propriedades do teste
 		this.prop = new TestProperties();
 
-		// cria o objeto da conex„o
+		// cria o objeto da conex√£o
 		this.adTree = new ADTree(
 				this.prop.getLDAPUrl(),
 				this.prop.getLDAPSearchBase(),
 				this.prop.getLDAPSearchBindDn(),
 				this.prop.getLDAPSearchBindPassword());
 
-		// realiza a conex„o
+		// realiza a conex√£o
 		this.adTree.connect();
 	}
 
@@ -38,7 +38,7 @@ public class ADGroupsRepositoryTest {
 
 		System.out.println("- queryGroups ----------------------");
 
-		// pega o repositÛrio de grupos
+		// pega o reposit√≥rio de grupos
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
 		// faz a busca de todos os grupos
@@ -56,7 +56,7 @@ public class ADGroupsRepositoryTest {
 		for(ADGroup group : groups) {
 			System.out.format("Nome: %s\n", group.getName());
 			if (group.getMail() == null)
-				fail(String.format("O grupo \"%s\" n„o possui e-mail", group.getName()));
+				fail(String.format("O grupo \"%s\" n√£o possui e-mail", group.getName()));
 		}
 	}
 
@@ -64,7 +64,7 @@ public class ADGroupsRepositoryTest {
 	public void testQueryGroupsByName() throws Exception {
 		System.out.println("- queryGroupsByName ----------------");
 
-		// pega o repositÛrio de grupos
+		// pega o reposit√≥rio de grupos
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
 		// faz a busca de todos os grupos que possuem a palavra "gr" no nome
@@ -73,11 +73,11 @@ public class ADGroupsRepositoryTest {
 		for(ADGroup group : groups) {
 			System.out.format("Nome: %s\n", group.getName());
 			/*
-			 * Deve-se ignorar a caixa das letras j· que as consultas do LDAP
-			 * n„o s„o case-sensitive.
+			 * Deve-se ignorar a caixa das letras j√° que as consultas do LDAP
+			 * n√£o s√£o case-sensitive.
 			 */
 			if (!group.getName().toLowerCase().contains("gr"))
-				fail(String.format("O grupo \"%s\" n„o possui a palavra \"gr\" no nome", group.getName()));
+				fail(String.format("O grupo \"%s\" n√£o possui a palavra \"gr\" no nome", group.getName()));
 		}
 	}
 
@@ -85,10 +85,10 @@ public class ADGroupsRepositoryTest {
 	public void testQueryDistributionLists() throws Exception {
 		System.out.println("- queryDistributionLists -----------");
 
-		// pega o repositÛrio de grupos
+		// pega o reposit√≥rio de grupos
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
-		// faz a busca de todas listas de distribuiÁ„o
+		// faz a busca de todas listas de distribui√ß√£o
 		List<ADGroup> groups = groupsRep.queryDistributionListsByName("*", false);
 
 		for(ADGroup group : groups) {
@@ -98,13 +98,13 @@ public class ADGroupsRepositoryTest {
 
 	@Test
 	public void testGetAdministratorsGroup() throws Exception {
-		// pega o repositÛrio de grupos
+		// pega o reposit√≥rio de grupos
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
 		// busca o grupo de administradores
 		ADGroup adminGroup = groupsRep.getAdministratorsGroup();
 
-		// verifica se o nome do grupo È "Administrators"
+		// verifica se o nome do grupo √© "Administrators"
 		assertEquals(adminGroup.getName(), "Administrators");
 	}
 
@@ -112,21 +112,21 @@ public class ADGroupsRepositoryTest {
 	public void testQueryEntryGroups() throws Exception {
 		System.out.println("- queryEntryGroups -----------------");
 
-		// pega o repositÛrio de grupos
+		// pega o reposit√≥rio de grupos
 		ADGroupsRepository groupsRep = this.adTree.getGroupsRepository();
 
-		// pega o repositÛrio de usu·rios e busca o usu·rio "Administrator"
+		// pega o reposit√≥rio de usu√°rios e busca o usu√°rio "Administrator"
 		ADUsersRepository usersRep = this.adTree.getUsersRepository();
 		ADUser adminUser = usersRep.queryUserByAccountName("Administrator");
 
-		// faz a busca dos grupos do usu·rio
+		// faz a busca dos grupos do usu√°rio
 		List<ADGroup> groups = groupsRep.queryEntryGroups(adminUser, false);
-		// verifica se o usu·rio È membro de todos os grupos
+		// verifica se o usu√°rio √© membro de todos os grupos
 		for (ADGroup group : groups) {
 			System.out.format("Nome: %s\n", group.getName());
 
 			assertTrue(
-					String.format("O usu·rio \"%s\" n„o pertence ao grupo \"%s\"", adminUser.getName(), group.getName()),
+					String.format("O usu√°rio \"%s\" n√£o pertence ao grupo \"%s\"", adminUser.getName(), group.getName()),
 					group.isMember(adminUser)
 					);
 		}

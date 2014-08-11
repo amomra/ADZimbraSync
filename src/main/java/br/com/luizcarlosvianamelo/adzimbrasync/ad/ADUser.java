@@ -6,11 +6,11 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
- * Classe que representa uma entrada do AD que simboliza um usuário. Este
- * usuário pode ser usado para fazer a autenticação na árvore do LDAP caso ele
- * tenha permissão para tal. Um objeto
+ * Classe que representa uma entrada do AD que simboliza um usuÃ¡rio. Este
+ * usuÃ¡rio pode ser usado para fazer a autenticaÃ§Ã£o na Ã¡rvore do LDAP caso ele
+ * tenha permissÃ£o para tal. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
- * através da chamada da função de conversão
+ * atravÃ©s da chamada da funÃ§Ã£o de conversÃ£o
  * {@link LDAPConverter#convert(Class, SearchResult) convert}.
  *  
  * @author Luiz Carlos Viana Melo
@@ -29,48 +29,48 @@ public class ADUser extends ADEntry {
 	
 	/**
 	 * Construtor da classe. Este inicializa os atributos com o valor
-	 * padrão <code>null</code>.
+	 * padrÃ£o <code>null</code>.
 	 */
 	public ADUser() {
 	}
 
 	/**
-	 * Retorna o código do país do usuário.
+	 * Retorna o cÃ³digo do paÃ­s do usuÃ¡rio.
 	 */
 	public int getCountryCode() {
 		return countryCode;
 	}
 
 	/**
-	 * Ajusta o código do país do usuário.
+	 * Ajusta o cÃ³digo do paÃ­s do usuÃ¡rio.
 	 */
 	public void setCountryCode(int countryCode) {
 		this.countryCode = countryCode;
 	}
 
 	/**
-	 * Retorna o nome completo do usuário.
+	 * Retorna o nome completo do usuÃ¡rio.
 	 */
 	public String getGivenName() {
 		return givenName;
 	}
 
 	/**
-	 * Ajusta o nome completo do usuário.
+	 * Ajusta o nome completo do usuÃ¡rio.
 	 */
 	public void setGivenName(String givenName) {
 		this.givenName = givenName;
 	}
 
 	/**
-	 * Retorna o sobrenome (surname) do usuário.
+	 * Retorna o sobrenome (surname) do usuÃ¡rio.
 	 */
 	public String getSn() {
 		return sn;
 	}
 
 	/**
-	 * Ajusta o sobrenome (surname) do usuário.
+	 * Ajusta o sobrenome (surname) do usuÃ¡rio.
 	 */
 	public void setSn(String sn) {
 		this.sn = sn;
