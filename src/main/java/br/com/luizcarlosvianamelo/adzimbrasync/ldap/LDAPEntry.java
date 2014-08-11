@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe que representa uma entidade da árvore LDAP, onde os atributos anotados
@@ -64,7 +65,7 @@ public class LDAPEntry {
 	 * @return A lista associativa onde a chave é o nome do atributo do LDAP e
 	 * o valor o campo da classe associado ao atributo.
 	 */
-	public Hashtable<String, Field> getLDAPAttributesFields() {
+	public Map<String, Field> getLDAPAttributesFields() {
 		// pega a lista de campos de todas as classes na hierarquia
 		List<Field> classesFields = this.getAllClassesFields(this.getClass());
 		

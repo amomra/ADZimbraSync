@@ -2,6 +2,9 @@ package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.SearchResult;
 
@@ -42,11 +45,36 @@ public class LDAPConverterTest {
 
 			ADUser user = LDAPConverter.convert(ADUser.class, entry);
 			// esse atributo sempre será ajustado
-			if (user.getDistinguishedName() != null)
-				System.out.format("DN: %s | CC: %d\n", user.getDistinguishedName(), user.getCountryCode());
-			else
-				fail("O objeto do usuário não está sendo preenchido adequadamente");
+			assertNotNull("O objeto do usuário não está sendo preenchido adequadamente", user.getDistinguishedName());
+
+			System.out.format("DN: %s | CC: %d\n", user.getDistinguishedName(), user.getCountryCode());
 		}
 	}
 
+	@Test
+	public void testMapFieldsIntoAttributes() throws Exception {
+		// faz a busca dos usuários
+		NamingEnumeration<SearchResult> result = this.ldapTree.search("(&(objectCategory=Person)(userPrincipalName=*))");
+		while (result.hasMoreElements()) {
+			SearchResult entry = result.nextElement();
+
+			ADUser user = LDAPConverter.convert(ADUser.class, entry);
+			// esse atributo sempre será ajustado
+			assertNotNull("O objeto do usuário não está sendo preenchido adequadamente", user.getDistinguishedName());
+			
+			// faz o mapeamento do distinguishedName para dn
+			Map<String, String> mapping = new Hashtable<>();
+			mapping.put("distinguishedName", "dn");
+			
+			Map<String, Object> mapped = LDAPConverter.mapFieldsIntoAttributes(user, mapping);
+			
+			// verifica se tem elementos
+			assertTrue("A quantidade de atributos mapeados está incorreto", mapped.size() == 1);
+			
+			String dn = (String) mapped.get("dn");
+			
+			// verifica se o atributo foi mapeado corretamente
+			assertNotNull("O mapeamento não foi feito corretamente já que o campo \"dn\" está nulo", dn);
+		}
+	}
 }
