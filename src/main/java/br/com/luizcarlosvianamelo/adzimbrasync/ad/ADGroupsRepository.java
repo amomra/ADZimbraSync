@@ -41,6 +41,22 @@ public class ADGroupsRepository {
 	}
 
 	/**
+	 * Função que faz a busca de todos os grupos contidos na árvore do AD.
+	 * @param withMail Informa a função se apenas os grupos com e-mail deverão
+	 * ser buscados.
+	 * @return A lista contendo todos os grupos da árvore do AD. Caso não
+	 * encontre grupos, é retornada uma lista vazia.
+	 * @throws Exception Lança exceção quando ocorre um erro durante a
+	 * realização da consulta no AD.
+	 */
+	public List<ADGroup> queryGroups(boolean withMail) throws Exception {
+		String searchFilter = null;
+		if (withMail)
+			searchFilter = "(mail=*)";
+		return this.queryGroups(searchFilter);
+	}
+
+	/**
 	 * Função que faz a busca dos grupos contidos na árvore do AD de acordo com
 	 * o filtro definido.
 	 * @param searchFilter O filtro a ser aplicado durante a busca dos grupos.

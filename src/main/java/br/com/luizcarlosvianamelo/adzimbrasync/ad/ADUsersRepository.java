@@ -42,6 +42,22 @@ public class ADUsersRepository {
 	public List<ADUser> queryUsers() throws Exception {
 		return this.queryUsers(null);
 	}
+	
+	/**
+	 * Função que retorna todos os usuários contidos na árvore do AD.
+	 * @param withMail Informa a função se apenas os usuários com e-mail deverão
+	 * ser buscados.
+	 * @return A lista contendo todos os usuários contidos na árvore do AD. Caso
+	 * não existam usuários a serem retornados, é retornada uma lista vazia.
+	 * @throws Exception Lança exceção quando ocorre um erro durante a
+	 * realização da consulta no AD.
+	 */
+	public List<ADUser> queryUsers(boolean withMail) throws Exception {
+		String searchFilter = null;
+		if (withMail)
+			searchFilter = "(mail=*)";
+		return this.queryUsers(searchFilter);
+	}
 
 	/**
 	 * Função que faz a busca dos usuários contidos na árvore do AD de acordo com
