@@ -4,12 +4,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroup;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADTree;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
+import com.zimbra.common.account.Key.DistributionListBy;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 
@@ -51,8 +55,9 @@ public class ADAutoProvision {
 		
 		/**
 		 * Função que retorna o mapeamento dos atributos do AD com os atributos
-		 * do Zimbra.
-		 * @param domain 
+		 * do Zimbra. Também coleta o mapeamento configurado no atributo
+		 * <code>zimbraAutoProvAttrMap</code>.
+		 * @param domain O domínio onde está configurado o mapeamento.
 		 * @return A lista associativa com o mapeamento dos atributos. A chave
 		 * desta será o nome do atributo no AD enquanto o valor será o nome do
 		 * atributo no Zimbra.
@@ -122,5 +127,19 @@ public class ADAutoProvision {
 			acct = this.prov.createAccount(user.getMail(), "AUTOPROVISIONED", attrValues);
 
 		return acct;
+	}
+	
+	public synchronized DistributionList autoProvisionDistributionList(Domain domain, ADGroup distributionList)
+			throws Exception {
+		
+		/*
+		 * Verifica se a lista já existe no Zimbra. Caso não existir, cria ela.
+		 */
+		DistributionList dl = this.prov.get(DistributionListBy.name, distributionList.getCn());
+		if (dl != null) {
+			
+		}
+		//dl.get
+		return null;
 	}
 }

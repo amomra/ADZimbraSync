@@ -141,6 +141,30 @@ public class ADGroupsRepository {
 	}
 
 	/**
+	 * Função que faz a busca de listas de distribuição cofiguradas no AD.
+	 * @param withMail Indica se somente as listas que tiverem o atributo
+	 * <code>mail</code> ajustado serão retornados.
+	 * @return Retorna a lista contendo as listas de distribuição do AD. Caso
+	 * não haja grupos, é retornada uma lista vazia.
+	 * @throws Exception Lança exceção quando ocorre um erro durante a
+	 * realização da consulta no AD.
+	 */
+	public List<ADGroup> queryDistributionLists(boolean withMail) throws Exception {
+		/*
+		 * Faz a query do LDAP em que busca as listas de distribuição
+		 * configuradas no AD. Isto é feito verificando se o bit 0x80000000 do
+		 * atributo groupType não está ajustado.
+		 */
+		String searchQuery = "(!(groupType:1.2.840.113556.1.4.803:=2147483648))";
+
+		// busca apenas os grupos que possuem e-mail
+		if (withMail)
+			searchQuery += "(mail=*)";
+
+		return this.queryGroups(searchQuery);
+	}
+	
+	/**
 	 * Função que faz a busca de listas de distribuição a partir de um nome.
 	 * @param distListName O nome da lista a ser buscada. Podem ser utilizados os
 	 * wildcards suportados pelo LDAP.

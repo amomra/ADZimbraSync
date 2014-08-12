@@ -3,6 +3,8 @@ package br.com.luizcarlosvianamelo.adzimbrasync.zimbra;
 import java.util.Date;
 import java.util.List;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroup;
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroupsRepository;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADTree;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUsersRepository;
@@ -38,8 +40,22 @@ public class ADAutoProvisionEager extends ADAutoProvision {
 		}
 	}
 
-	private void autoProvisionDomainADDistributionLists(ADTree adTree, Domain domain) {
-
+	private void autoProvisionDomainADDistributionLists(ADTree adTree, Domain domain) throws Exception {
+		// pega o repositório de grupos
+		ADGroupsRepository rep = adTree.getGroupsRepository();
+		
+		// busca as listas de distribuição do AD
+		List<ADGroup> distribuitionLists = rep.queryDistributionLists(true);
+		ZimbraLog.autoprov.debug("AD - Provisioning %d distribution lists from domain %s",
+				distribuitionLists.size(), domain.getName());
+		
+		// para cada lista
+		for (ADGroup distribuitionList : distribuitionLists) {
+			// cria ou atualiza a lista de distribuição
+			ZimbraLog.autoprov.info("AD - auto provisioning distribution list \"%s\"",
+					distribuitionList.getDistinguishedName());
+			this.autoProvisionDistributionList(domain, distribuitionList);
+		}
 	}
 
 	private void autoProvisionDomainADEntries(Domain domain) throws Exception {		
