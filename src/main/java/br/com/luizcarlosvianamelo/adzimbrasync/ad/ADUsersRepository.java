@@ -9,6 +9,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
@@ -132,13 +133,13 @@ public class ADUsersRepository {
 	 * @throws Exception Lança exceção quando ocorre um erro durante a
 	 * realização da consulta no AD.
 	 */
-	public ADUser queryUserByDN(String userDN) throws Exception {
+	public ADUser queryUserByDN(DN userDN) throws Exception {
 		/*
 		 * Faz a consulta do usuário que possui o attributo distinguishedName
 		 * com o valor passado. Esta consulta deverá retornar apenas um
 		 * usuário.
 		 */
-		List<ADUser> users = this.queryUsers(String.format("(distinguishedName=%s)", userDN));
+		List<ADUser> users = this.queryUsers(String.format("(distinguishedName=%s)", userDN.toString()));
 
 		// retorna o usuário caso ele tenha sido encontrado
 		if (users.size() > 0)
@@ -185,7 +186,7 @@ public class ADUsersRepository {
 		 * Faz a consulta na base LDAP por todos os usuários que possuirem o
 		 * atributo memberOf ajustado com o valor do DN do grupo
 		 */
-		String searchQuery = String.format("(memberOf=%s)", group.getDistinguishedName());
+		String searchQuery = String.format("(memberOf=%s)", group.getDistinguishedName().toString());
 
 		// busca apenas os usuários que possuem e-mail
 		if (withMail)
@@ -214,7 +215,7 @@ public class ADUsersRepository {
 		byte[] encodedPassword = quotedPassword.getBytes("UTF-16LE");
 		
 		// ajusta a senha
-		this.adTree.modify(user.getDistinguishedName(),
+		this.adTree.modify(user.getDistinguishedName().toString(),
 				new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("unicodePwd", encodedPassword)));
 	}

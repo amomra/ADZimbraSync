@@ -71,7 +71,7 @@ public class LDAPConverterTest {
 			// verifica se tem elementos
 			assertTrue("A quantidade de atributos mapeados está incorreto", mapped.size() == 1);
 			
-			String dn = (String) mapped.get("dn");
+			String dn = (String) mapped.get("dn").toString();
 			
 			// verifica se o atributo foi mapeado corretamente
 			assertNotNull("O mapeamento não foi feito corretamente já que o campo \"dn\" está nulo", dn);

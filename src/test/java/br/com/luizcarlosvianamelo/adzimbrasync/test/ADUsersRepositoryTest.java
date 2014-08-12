@@ -139,7 +139,7 @@ public class ADUsersRepositoryTest {
 		adTree.disconnect();
 
 		// e tenta reconectar com o usuário modificado e sua nova senha
-		adTree.setLdapSearchBindDn(user.getDistinguishedName());
+		adTree.setLdapSearchBindDn(user.getDistinguishedName().toString());
 		adTree.setLdapSearchBindPassword("teste123");
 		adTree.connect();
 

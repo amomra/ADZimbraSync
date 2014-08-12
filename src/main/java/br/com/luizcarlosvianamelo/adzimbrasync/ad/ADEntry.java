@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.naming.directory.SearchResult;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPDateParser;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 
 /**
@@ -25,7 +25,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 public class ADEntry extends LDAPEntry {
 	
 	@LDAPAttribute
-	protected String distinguishedName;
+	protected DN distinguishedName;
 	
 	@LDAPAttribute
 	protected String sAMAccountName;
@@ -40,9 +40,9 @@ public class ADEntry extends LDAPEntry {
 	protected String mail;
 	
 	@LDAPAttribute( name = "memberOf" )
-	protected List<String> memberOfGroups;
+	protected List<DN> memberOfGroups;
 	
-	@LDAPAttribute( attributeParser = LDAPDateParser.class )
+	@LDAPAttribute
 	protected Date whenChanged;
 	
 	/**
@@ -56,14 +56,14 @@ public class ADEntry extends LDAPEntry {
 	/**
 	 * Retorna o DN da entrada do AD.
 	 */
-	public String getDistinguishedName() {
+	public DN getDistinguishedName() {
 		return distinguishedName;
 	}
 
 	/**
 	 * Ajusta o DN da entrada do AD.
 	 */
-	public void setDistinguishedName(String distinguishedName) {
+	public void setDistinguishedName(DN distinguishedName) {
 		this.distinguishedName = distinguishedName;
 	}
 
@@ -126,14 +126,14 @@ public class ADEntry extends LDAPEntry {
 	/**
 	 * Retorna a lista de DNs dos grupos aos quais a entrada pertence.
 	 */
-	public List<String> getMemberOfGroups() {
+	public List<DN> getMemberOfGroups() {
 		return memberOfGroups;
 	}
 
 	/**
 	 * Ajusta a lista de DNs dos grupos aos quais a entrada pertence.
 	 */
-	public void setMemberOfGroups(List<String> memberOfGroups) {
+	public void setMemberOfGroups(List<DN> memberOfGroups) {
 		this.memberOfGroups = memberOfGroups;
 	}
 	
@@ -158,10 +158,10 @@ public class ADEntry extends LDAPEntry {
 	 * @return Retorna <code>true</code> caso a entrada pertencer ao grupo. Caso
 	 * contrário, retorna <code>false</code>.
 	 */
-	private boolean isMemberOf(String groupDn) {
+	private boolean isMemberOf(DN groupDn) {
 		// verifica a lista de grupos aos quais este grupo pertence
 		if (this.memberOfGroups != null) {
-			for (String memberOfGroupDn : this.memberOfGroups)
+			for (DN memberOfGroupDn : this.memberOfGroups)
 				// se o DN estiver contido na lista
 				if (memberOfGroupDn.equals(groupDn))
 					return true;

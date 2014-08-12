@@ -6,6 +6,7 @@ import java.util.List;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.SearchResult;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
@@ -103,12 +104,12 @@ public class ADGroupsRepository {
 	 * @throws Exception Lança exceção quando ocorre um erro durante a
 	 * realização da consulta no AD.
 	 */
-	public ADGroup queryGroupByDN(String groupDN) throws Exception {
+	public ADGroup queryGroupByDN(DN groupDN) throws Exception {
 		/*
 		 * Faz a consulta do grupo que possui o attributo distinguishedName com o valor
 		 * passado. Esta consulta deverá retornar apenas um grupo.
 		 */
-		List<ADGroup> groups = this.queryGroups(String.format("(distinguishedName=%s)", groupDN));
+		List<ADGroup> groups = this.queryGroups(String.format("(distinguishedName=%s)", groupDN.toString()));
 
 		// retorna o grupo caso ele tenha sido encontrado
 		if (groups.size() > 0)
@@ -231,7 +232,7 @@ public class ADGroupsRepository {
 		 * Faz a query do LDAP em que busca as entradas que tem o atributo
 		 * memberOf com o valor do DN do usuário.
 		 */
-		String searchQuery = String.format("(member=%s)", entry.getDistinguishedName());
+		String searchQuery = String.format("(member=%s)", entry.getDistinguishedName().toString());
 
 		// busca apenas os grupos que possuem e-mail
 		if (withMail)

@@ -1,8 +1,11 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.naming.directory.Attribute;
 
@@ -24,39 +27,6 @@ public class LDAPAttributeParser {
 	 * Construtor da classe.
 	 */
 	public LDAPAttributeParser() {
-	}
-	
-	/**
-	 * Função que faz o parser do objeto com o valor do atributo lido pela API
-	 * do LDAP e armazena o resultado no campo desejado como um objeto Java.
-	 * @param field O campo do objeto que irá receber o resultado da conversão.
-	 * @param obj O objeto que terá o seu campo alterado com o resultado da
-	 * conversão.
-	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception Lança uma exceção quando não for possível ajustar o
-	 * valor do campo com o valor do atributo.
-	 */
-	public void parseAsObject(Field field, Object obj, Attribute attribute) throws Exception {
-		/*
-		 * Por padrão, a biblioteca de LDAP do Java trata todos os atributos
-		 * como String.
-		 * Ref: http://docs.oracle.com/javase/jndi/tutorial/ldap/misc/attrs.html
-		 */
-		field.setAccessible(true);
-		
-		// verifica se o tipo do campo é uma lista
-		if (field.getType() == List.class) {
-			// cria uma lista de strings com os valores dos campos
-			List<String> attrValues = new ArrayList<>();
-			for (int i = 0; i < attribute.size(); i++)
-				attrValues.add((String) attribute.get(i));
-			
-			// ajusta a lista
-			field.set(obj, attrValues);
-		} else {
-			// apenas ajusta o valor do campo
-			field.set(obj, attribute.get());
-		}
 	}
 
 	/**
@@ -283,4 +253,125 @@ public class LDAPAttributeParser {
 		}
 	}
 	
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um {@link String}.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	public void parseAsString(Field field, Object obj, Attribute attribute) throws Exception {
+		/*
+		 * Por padrão, a biblioteca de LDAP do Java trata todos os atributos
+		 * como String.
+		 * Ref: http://docs.oracle.com/javase/jndi/tutorial/ldap/misc/attrs.html
+		 */
+		field.setAccessible(true);
+		
+		// verifica se o tipo do campo é uma lista
+		if (field.getType() == List.class) {
+			// cria uma lista de strings com os valores dos campos
+			List<String> attrValues = new ArrayList<>();
+			for (int i = 0; i < attribute.size(); i++)
+				attrValues.add((String) attribute.get(i));
+			
+			// ajusta a lista
+			field.set(obj, attrValues);
+		} else {
+			// apenas ajusta o valor do campo
+			field.set(obj, attribute.get());
+		}
+	}
+	
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um {@link Date}.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	public void parseAsDate(Field field, Object obj, Attribute attribute) throws Exception {
+		field.setAccessible(true);
+		
+		// cria o parser para a data vinda do LDAP
+		SimpleDateFormat dateFormater = new SimpleDateFormat("yyyyMMddHHmmss");
+		dateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		// verifica se o tipo do campo é uma lista
+		if (field.getType() == List.class) {
+			// cria uma lista de dates com os valores dos campos
+			List<Date> attrValues = new ArrayList<>();
+			for (int i = 0; i < attribute.size(); i++) {
+				String dateString = (String) attribute.get(i);
+				
+				attrValues.add(dateFormater.parse(dateString));
+			}
+
+			// ajusta a lista
+			field.set(obj, attrValues);
+		} else {
+			String dateString = (String) attribute.get();
+			// apenas ajusta o valor do campo
+			field.set(obj, dateFormater.parse(dateString));
+		}
+	}
+	
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um {@link DN}.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	public void parseAsDN(Field field, Object obj, Attribute attribute) throws Exception {
+		field.setAccessible(true);
+
+		// verifica se o tipo do campo é uma lista
+		if (field.getType() == List.class) {
+			// cria uma lista de DN com os valores dos campos
+			List<DN> attrValues = new ArrayList<>();
+			for (int i = 0; i < attribute.size(); i++) {
+				String dnString = (String) attribute.get(i);
+				
+				attrValues.add(DN.parse(dnString));
+			}
+
+			// ajusta a lista
+			field.set(obj, attrValues);
+		} else {
+			String dnString = (String) attribute.get();
+			// apenas ajusta o valor do campo
+			field.set(obj, DN.parse(dnString));
+		}
+	}
+	
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um objeto Java. Por
+	 * padrão, esta classe não é capaz de fazer a conversão do objeto. Logo, o
+	 * valor do campo será ajustado para <code>null</code>.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	public void parseAsCustomObject(Field field, Object obj, Attribute attribute) throws Exception {
+		/*
+		 * Apenas ajusta o campo com o valor nulo já que esta classe não suporta
+		 * a conversão de outras classes que não sejam do Java.
+		 */
+		field.setAccessible(true);
+		field.set(obj, null);
+	}
 }

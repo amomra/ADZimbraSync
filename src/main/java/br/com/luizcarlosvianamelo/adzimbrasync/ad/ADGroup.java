@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.naming.directory.SearchResult;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
@@ -20,7 +21,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 public class ADGroup extends ADEntry {
 	
 	@LDAPAttribute( name = "member" )
-	private List<String> members;
+	private List<DN> members;
 	
 	/**
 	 * Construtor padrão da classe. Este inicializa os atributos com o valor
@@ -32,14 +33,14 @@ public class ADGroup extends ADEntry {
 	/**
 	 * Retorna a lista contendo os DNs das entradas que pertencem ao grupo.
 	 */
-	public List<String> getMembers() {
+	public List<DN> getMembers() {
 		return members;
 	}
 
 	/**
 	 * Ajusta a lista contendo os DNs das entradas que pertencem ao grupo.
 	 */
-	public void setMembers(List<String> members) {
+	public void setMembers(List<DN> members) {
 		this.members = members;
 	}
 	
@@ -50,10 +51,10 @@ public class ADGroup extends ADEntry {
 	 * @return Retorna <code>true</code> caso a entrada com o DN passado
 	 * pertencer ao grupo. Caso contrário, retorna <code>false</code>.
 	 */
-	private boolean isMember(String dn) {
+	private boolean isMember(DN dn) {
 		// verifica a lista de membros do grupo
 		if (this.members != null) {
-			for (String memberDn : this.members)
+			for (DN memberDn : this.members)
 				// se o DN estiver contido na lista
 				if (memberDn.equals(dn))
 					return true;
