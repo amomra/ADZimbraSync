@@ -17,12 +17,34 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 
+/**
+ * Classe utilizada para a realização do provisionamento automático periódico do
+ * domínio no Zimbra. Apenas os domínios com o atributo <code>zimbraAutoProvMode</code>
+ * configurado com o valor <code>"EAGER"</code> serão provisionados para o
+ * Zimbra. Além disso, apenas os usuários e listas de distribuição com o
+ * atributo <code>mail</code> ajustados serão provisionados.
+ * 
+ * @author Luiz Carlos Viana Melo
+ *
+ */
 public class ADAutoProvisionEager extends ADAutoProvision {
 
+	/**
+	 * Construtor da classe.
+	 * @param prov A classe de provisionamento utilizada.
+	 */
 	ADAutoProvisionEager (ADProvisioning prov) {
 		super(prov);
 	}
 	
+	/**
+	 * Função privada que faz o provisionamento dos usuários de um domínio no AD
+	 * para o Zimbra.
+	 * @param adTree O objeto da árvore do AD conectada.
+	 * @param domain O domínio do Zimbra onde os usuários serão provisionados.
+	 * @throws Exception Lança exceção quando não for possível realizar o
+	 * provisionamento.
+	 */
 	private void autoProvisionDomainADUsers(ADTree adTree, Domain domain) throws Exception {
 		// pega o repositório de usuários
 		ADUsersRepository rep = adTree.getUsersRepository();
@@ -35,14 +57,24 @@ public class ADAutoProvisionEager extends ADAutoProvision {
 		// para cada usuário
 		for (ADUser user : users) {
 			// cria ou atualiza a conta no zimbra
-			ZimbraLog.autoprov.info("AD - auto provisioning account \"%s\"", user.getDistinguishedName());
+			ZimbraLog.autoprov.info("AD - auto provisioning account \"%s\"", user.getDistinguishedName().toString());
 			this.autoProvisionAccount(domain, user);
 		}
 	}
 
+	/**
+	 * Função privada que faz o provisionamento das listas de distribuição de um
+	 * domínio no AD para o Zimbra.
+	 * @param adTree O objeto da árvore do AD conectada.
+	 * @param domain O domínio do Zimbra onde as listas serão provisionadas.
+	 * @throws Exception Lança exceção quando não for possível realizar o
+	 * provisionamento.
+	 */
 	private void autoProvisionDomainADDistributionLists(ADTree adTree, Domain domain) throws Exception {
 		// pega o repositório de grupos
 		ADGroupsRepository rep = adTree.getGroupsRepository();
+		// pega o repositório de usuários para buscar os usuários do grupo
+		ADUsersRepository userRep = adTree.getUsersRepository();
 		
 		// busca as listas de distribuição do AD
 		List<ADGroup> distribuitionLists = rep.queryDistributionLists(true);
@@ -53,11 +85,21 @@ public class ADAutoProvisionEager extends ADAutoProvision {
 		for (ADGroup distribuitionList : distribuitionLists) {
 			// cria ou atualiza a lista de distribuição
 			ZimbraLog.autoprov.info("AD - auto provisioning distribution list \"%s\"",
-					distribuitionList.getDistinguishedName());
-			this.autoProvisionDistributionList(domain, distribuitionList);
+					distribuitionList.getDistinguishedName().toString());
+			this.autoProvisionDistributionList(domain, distribuitionList,
+					userRep.queryGroupMembers(distribuitionList, true));
 		}
 	}
 
+	/**
+	 * Função privada que faz o provisionamento das entradas LDAP de um domínio
+	 * no AD para o Zimbra. Estas entradas podem ser usuários ou listas de
+	 * distribuição.
+	 * @param domain O domínio do Zimbra onde os usuários e as listas serão
+	 * provisionadas.
+	 * @throws Exception Lança exceção quando não for possível realizar o
+	 * provisionamento.
+	 */
 	private void autoProvisionDomainADEntries(Domain domain) throws Exception {		
 		// se conecta com o servidor AD
 		ZimbraLog.autoprov.debug("AD - Connecting to domain %s", domain.getName());
@@ -81,12 +123,25 @@ public class ADAutoProvisionEager extends ADAutoProvision {
 		adTree.disconnect();
 	}
 
+	/**
+	 * Função que informa se o domínio está habilitado o modo "EAGER" de
+	 * provisionamento automático.
+	 * @param domain O domínio que será checado.
+	 * @return Retorna <code>true</code> se o domínio está habilitado para
+	 * provisionamento no modo "EAGER". Caso contrário, retorna <code>false</code>.
+	 */
 	private static boolean autoProvEagerEnabledForDomain(Domain domain) {
 		// a função getAutoProvModeAsString não funciona
 		return domain.getMultiAttrSet(Provisioning.A_zimbraAutoProvMode)
 				.contains(AutoProvMode.EAGER.name());
 	}
 	
+	/**
+	 * Faz o provisionamento automático das contas e listas de distribuição
+	 * de um domínio do AD.
+	 * @throws ServiceException Lança exceção se não for possível fazer o
+	 * provisionamento.
+	 */
 	public synchronized void autoProvisionAccountsAndGroups() throws ServiceException {
 		/* 
 		 * Verifica quais domínios estão habilitados para provisionamento
