@@ -158,4 +158,29 @@ public class ADUsersRepositoryTest {
 		// desconecta
 		adTree.disconnect();
 	}
+	
+	@Test
+	public void testModifyUser() throws Exception {
+		System.out.println("- queryUsersByName -----------------");
+
+		// busca todos os usuários que possuem a palavra "Usuário" no nome
+		List<ADUser> users = this.usersRep.queryUsersByName("*Usuário*", false);
+		
+		// modifica o nome do primeiro
+		ADUser user = users.get(0);
+		String oldName = user.getGivenName();
+		user.setGivenName("teste");
+		// modifica
+		this.usersRep.modifyUser(user);
+		// pega o usuário do LDAP
+		user = this.usersRep.queryUserByDN(user.getDistinguishedName());
+		
+		// verifica se o nome foi alterado
+		assertEquals(String.format("Nome diferente do esperado: %s", user.getGivenName()), "teste", user.getGivenName());
+		
+		// ajusta o nome antigo
+		user.setGivenName(oldName);
+		// modifica
+		this.usersRep.modifyUser(user);
+	}
 }

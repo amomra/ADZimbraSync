@@ -191,4 +191,20 @@ public class ADUsersRepository {
 				new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("unicodePwd", encodedPassword)));
 	}
+	
+	/**
+	 * Função que modifica os atributos de um usuário no AD com base nos valores
+	 * dos campos.
+	 * @param user O objeto do usuário do AD. Para que este seja modificado, o
+	 * campo <code>distinguishedName</code> deve estar corretamente preenchido
+	 * com o DN do usuário a ser modificado. Apenas os atributos habilitados
+	 * para escrita e com valor diferente de <code>null</code> serão modificados
+	 * no LDAP.
+	 * @throws Exception Lança exceção caso não seja possível modificar os
+	 * atributos do usuário.
+	 */
+	public void modifyUser(ADUser user) throws Exception {
+		// faz a chamada para modificação
+		this.adTree.modify(user.getDistinguishedName(), user);
+	}
 }

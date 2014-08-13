@@ -49,7 +49,7 @@ public class LDAPConverterTest {
 			// esse atributo sempre será ajustado
 			assertNotNull("O objeto do usuário não está sendo preenchido adequadamente", user.getDistinguishedName());
 
-			System.out.format("DN: %s | CC: %d\n", user.getDistinguishedName(), user.getCountryCode());
+			System.out.format("DN: %s | CC: %s\n", user.getDistinguishedName(), user.getCountry());
 		}
 	}
 

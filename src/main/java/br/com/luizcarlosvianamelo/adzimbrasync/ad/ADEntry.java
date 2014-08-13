@@ -24,35 +24,37 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
  *
  */
 public abstract class ADEntry extends LDAPEntry {
-	
+
 	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected DN distinguishedName;
-	
+
 	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String sAMAccountName;
-	
+
 	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String cn;
-	
+
 	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String name;
-	
+
 	@LDAPAttribute
 	protected String mail;
-	
-	@LDAPAttribute( name = "memberOf" )
+
+	@LDAPAttribute(
+			name = "memberOf",
+			accessMode = AttributeAccessMode.READ )
 	protected List<DN> memberOfGroups;
-	
+
 	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected Date whenChanged;
-	
+
 	/**
 	 * Construtor padrão da classe. Os atributos desta são inicializadas com o
 	 * valor padrão <code>null</code>.
 	 */
 	public ADEntry() {
 	}
-	
+
 	/**
 	 * Retorna o DN da entrada do AD.
 	 */
@@ -136,7 +138,7 @@ public abstract class ADEntry extends LDAPEntry {
 	public void setMemberOfGroups(List<DN> memberOfGroups) {
 		this.memberOfGroups = memberOfGroups;
 	}
-	
+
 	/**
 	 * Retorna a data e horário da última modificação da entrada.
 	 */

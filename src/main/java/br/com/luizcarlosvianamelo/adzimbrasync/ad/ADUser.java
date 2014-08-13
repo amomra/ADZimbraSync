@@ -18,8 +18,8 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
  */
 public class ADUser extends ADEntry {
 	
-	@LDAPAttribute
-	private int countryCode;
+	@LDAPAttribute( name = "co" )
+	private String country;
 	
 	@LDAPAttribute
 	private String givenName;
@@ -40,17 +40,17 @@ public class ADUser extends ADEntry {
 	}
 
 	/**
-	 * Retorna o código do país do usuário.
+	 * Retorna o nome do país do usuário.
 	 */
-	public int getCountryCode() {
-		return countryCode;
+	public String getCountry() {
+		return country;
 	}
 
 	/**
-	 * Ajusta o código do país do usuário.
+	 * Ajusta o nome do país do usuário.
 	 */
-	public void setCountryCode(int countryCode) {
-		this.countryCode = countryCode;
+	public void setCountryCode(String country) {
+		this.country = country;
 	}
 
 	/**

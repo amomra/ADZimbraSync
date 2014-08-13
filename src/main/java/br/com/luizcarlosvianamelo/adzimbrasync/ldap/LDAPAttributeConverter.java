@@ -65,11 +65,11 @@ public class LDAPAttributeConverter {
 			for (Object value : values) {
 				// adiciona no atributo se ele for diferente de null
 				if (value != null)
-					attr.add(value);
+					attr.add(value.toString());
 			}
 		} else
 			// adiciona o valor
-			attr.add(fieldValue);
+			attr.add(fieldValue.toString());
 		return attr;
 	}
 
