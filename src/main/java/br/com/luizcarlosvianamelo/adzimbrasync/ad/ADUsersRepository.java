@@ -1,16 +1,12 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingEnumeration;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
-import javax.naming.directory.SearchResult;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
  * Classe que representa o repositório de usuários que estão contidos na árvore do
@@ -41,7 +37,7 @@ public class ADUsersRepository {
 	 * realização da consulta no AD.
 	 */
 	public List<ADUser> queryUsers() throws Exception {
-		return this.queryUsers(null);
+		return this.queryUsers("");
 	}
 	
 	/**
@@ -54,7 +50,7 @@ public class ADUsersRepository {
 	 * realização da consulta no AD.
 	 */
 	public List<ADUser> queryUsers(boolean withMail) throws Exception {
-		String searchFilter = null;
+		String searchFilter = "";
 		if (withMail)
 			searchFilter = "(mail=*)";
 		return this.queryUsers(searchFilter);
@@ -73,31 +69,7 @@ public class ADUsersRepository {
 	 */
 	public List<ADUser> queryUsers(String searchFilter) throws Exception {
 		// faz a consulta ao LDAP dos usuários
-		String searchString = "(&(objectCategory=Person)%s)";
-
-		// caso seja adicionado mais um filtro
-		if (searchFilter != null)
-			searchString = String.format(searchString, searchFilter);
-		else
-			searchString = String.format(searchString, "");
-
-		// faz a consulta
-		NamingEnumeration<SearchResult> result = this.adTree.search(searchString);
-
-		// armazena a lista de usuários
-		List<ADUser> users = new ArrayList<>();
-
-		// monta os objetos
-		while (result.hasMoreElements()) {
-
-			SearchResult entry = result.nextElement();
-
-			ADUser user = LDAPConverter.convert(ADUser.class, entry);
-			// adiciona na lista
-			users.add(user);
-		}
-
-		return users;
+		return this.adTree.search(ADUser.class, searchFilter);
 	}
 
 	/**

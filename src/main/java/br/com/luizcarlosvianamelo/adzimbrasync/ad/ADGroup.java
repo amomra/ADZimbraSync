@@ -29,6 +29,11 @@ public class ADGroup extends ADEntry {
 	 */
 	public ADGroup() {
 	}
+	
+	@Override
+	public String getEntryQueryFormat() {
+		return "(&(objectCategory=Group)%s)";
+	}
 
 	/**
 	 * Retorna a lista contendo os DNs das entradas que pertencem ao grupo.

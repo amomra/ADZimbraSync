@@ -33,6 +33,11 @@ public class ADUser extends ADEntry {
 	 */
 	public ADUser() {
 	}
+	
+	@Override
+	public String getEntryQueryFormat() {
+		return "(&(objectCategory=Person)%s)";
+	}
 
 	/**
 	 * Retorna o código do país do usuário.

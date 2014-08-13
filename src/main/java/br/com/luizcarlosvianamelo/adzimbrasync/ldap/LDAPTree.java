@@ -1,6 +1,8 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -211,6 +213,56 @@ public class LDAPTree {
 
 		// realiza a busca
 		return this.ldapContext.search(this.ldapSearchBase, filter, searchControls);
+	}
+
+	/**
+	 * Função que faz a busca de um tipo específico de entrada do LDAP.
+	 * @param objType A classe que representa a entrada do LDAP.
+	 * @return Retorna a lista de objetos com as entradas do LDAP. Caso não
+	 * existam entradas, retorna uma lista vazia.
+	 * @throws Exception Lança uma exceção quando não for possível realizar a
+	 * consulta. 
+	 */
+	public <ObjectType extends LDAPEntry> List<ObjectType> search(Class<ObjectType> objType)
+			throws Exception {
+		return this.search(objType, "");
+	}
+
+	/**
+	 * Função que faz a busca de um tipo específico de entrada do LDAP de acordo
+	 * com o filtro passado.
+	 * @param objType A classe que representa a entrada do LDAP.
+	 * @param filter O filtro a ser utilizado na busca.
+	 * @return Retorna a lista de objetos com as entradas do LDAP de acordo com
+	 * o filtro LDAP. Caso não existam entradas, retorna uma lista vazia.
+	 * @throws Exception Lança uma exceção quando não for possível realizar a
+	 * consulta. 
+	 */
+	public <ObjectType extends LDAPEntry> List<ObjectType> search(Class<ObjectType> objType, String filter)
+			throws Exception {
+		// cria uma instância do objeto apenas para retornar a query da entrada
+		ObjectType obj = objType.newInstance();
+		
+		// formata a query a ser realizada
+		String query = String.format(obj.getEntryQueryFormat(), filter);
+		
+		// faz a consulta
+		NamingEnumeration<SearchResult> result = this.search(query);
+
+		// armazena a lista de entradas
+		List<ObjectType> ldapEntries = new ArrayList<>();
+
+		// monta os objetos
+		while (result.hasMoreElements()) {
+
+			SearchResult entry = result.nextElement();
+
+			ObjectType ldapEntry = LDAPConverter.convert(objType, entry);
+			// adiciona na lista
+			ldapEntries.add(ldapEntry);
+		}
+
+		return ldapEntries;
 	}
 	
 	/**

@@ -22,7 +22,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
  * @author Luiz Carlos Viana Melo
  *
  */
-public class ADEntry extends LDAPEntry {
+public abstract class ADEntry extends LDAPEntry {
 	
 	@LDAPAttribute
 	protected DN distinguishedName;
@@ -50,7 +50,6 @@ public class ADEntry extends LDAPEntry {
 	 * valor padrão <code>null</code>.
 	 */
 	public ADEntry() {
-		
 	}
 	
 	/**

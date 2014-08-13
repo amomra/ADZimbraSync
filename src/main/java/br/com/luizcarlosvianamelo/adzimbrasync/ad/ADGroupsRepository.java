@@ -1,13 +1,8 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.SearchResult;
-
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 
 /**
  * Classe que representa o repositório de grupos que estão contidos na árvore do
@@ -38,7 +33,7 @@ public class ADGroupsRepository {
 	 * realização da consulta no AD.
 	 */
 	public List<ADGroup> queryGroups() throws Exception {
-		return this.queryGroups(null);
+		return this.queryGroups("");
 	}
 
 	/**
@@ -51,7 +46,7 @@ public class ADGroupsRepository {
 	 * realização da consulta no AD.
 	 */
 	public List<ADGroup> queryGroups(boolean withMail) throws Exception {
-		String searchFilter = null;
+		String searchFilter = "";
 		if (withMail)
 			searchFilter = "(mail=*)";
 		return this.queryGroups(searchFilter);
@@ -70,30 +65,7 @@ public class ADGroupsRepository {
 	 */
 	public List<ADGroup> queryGroups(String searchFilter) throws Exception {
 		// faz a consulta ao LDAP dos grupos
-		String searchString = "(&(objectCategory=Group)%s)";
-
-		// caso seja adicionado mais um filtro
-		if (searchFilter != null)
-			searchString = String.format(searchString, searchFilter);
-		else
-			searchString = String.format(searchString, "");
-
-		// faz a consulta
-		NamingEnumeration<SearchResult> result = this.adTree.search(searchString);
-
-		// armazena a lista de usuários
-		List<ADGroup> groups = new ArrayList<>();
-
-		// monta os objetos
-		while (result.hasMoreElements()) {
-			SearchResult entry = result.nextElement();
-
-			ADGroup group = LDAPConverter.convert(ADGroup.class, entry);
-			// adiciona na lista
-			groups.add(group);
-		}
-
-		return groups;
+		return this.adTree.search(ADGroup.class, searchFilter);
 	}
 
 	/**

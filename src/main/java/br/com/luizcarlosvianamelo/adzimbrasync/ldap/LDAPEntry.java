@@ -16,15 +16,14 @@ import java.util.Map;
  * @author Luiz Carlos Viana Melo
  *
  */
-public class LDAPEntry {
+public abstract class LDAPEntry {
 	
 	/**
 	 * Construtor da classe.
 	 */
-	public LDAPEntry()
-	{
+	public LDAPEntry() {
 	}
-	
+
 	/**
 	 * Função privada que retorna a lista contendo todos os campos declarados
 	 * nas classes pertecentes a hierarquia.
@@ -91,4 +90,17 @@ public class LDAPEntry {
 			throw new InvalidParameterException("LDAP Entry has no attributes to be returned");
 		return fields;
 	}
+	
+	/**
+	 * Função que retorna o formato da <i>query</i> usada para buscar um tipo
+	 * específico de entrada do LDAP. Esta <i>query</i>
+	 * deve conter um marcador de {@link String} para que ela seja acrescida de
+	 * uma <i>subquery</i> na função convert, sendo que esta última pode ser uma
+	 * <i>string</i> vazia. A <i>query</i> e o marcador deverão estar no formato
+	 * suportado pela função {@link String#format(String, Object...)}.
+	 * <p>Exemplo de <i>query</i>: <code>"(&(objectCategory=Person)%s)"</code>
+	 * pode ser para retornar todos os usuários do AD.</p>
+	 * @return O formato da <i>query</i> da entrada do LDAP.
+	 */
+	public abstract String getEntryQueryFormat();
 }
