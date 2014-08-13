@@ -56,6 +56,11 @@ public class LDAPConverter {
 				Field field = attrField.getValue();
 				// pega a anotação informando a classe de conversão do atributo
 				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
+				// se o atributo estiver habilitado apenas para escrita
+				if (attrAnn.accessMode().equals(AttributeAccessMode.WRITE))
+					// ignora ele
+					continue;
+				
 				LDAPAttributeConverter parser = (LDAPAttributeConverter) attrAnn.attributeConverter().newInstance();
 
 				// verifica o tipo para chamar a função de conversão
@@ -104,7 +109,8 @@ public class LDAPConverter {
 	 * valores são diferentes de <code>null</code> serão lidos.
 	 * @param attrMap A definição do mapeamento dos atributos do LDAP com os
 	 * campos do objeto. Caso haja vários mapeamentos para o mesmo atributo do
-	 * LDAP, apenas o último será considerado. 
+	 * LDAP, apenas o último será considerado. Também serão apenas retornados
+	 * os atributos com permissão de leitura do LDAP.
 	 * @return Retorna a lista associativa associando o atributo do LDAP com o
 	 * valor do campo.
 	 * @throws Exception Lança exceção quando não for possível ler o valor do
@@ -125,6 +131,11 @@ public class LDAPConverter {
 			String attrName = attrMap.get(attrField.getKey());
 			if (attrName != null) {
 				Field field = attrField.getValue();
+				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
+				// ignora os atributos com permissão só de escrita
+				if (ann.accessMode().equals(AttributeAccessMode.WRITE))
+					continue;
+				
 				field.setAccessible(true);
 
 				Object value = field.get(obj);
@@ -144,8 +155,10 @@ public class LDAPConverter {
 	 * @param attributesNames A lista com os nomes dos atributos que serão
 	 * coletados. Caso esta seja vazia, serão coletados todos os atributos.
 	 * @return Retorna a lista com os atributos contidos na lista de nomes
-	 * que não estão com o valor igual a <code>null</code>. Pode retornar
-	 * uma lista vazia caso a condição citada não tenha sido atendida.
+	 * que não estão com o valor igual a <code>null</code>. Também serão
+	 * ignorados os atributos que possuirem permissão apenas de leitura.
+	 * Pode retornar uma lista vazia caso as condições citadas não tenham
+	 * sido atendidas.
 	 * @throws Exception Lança exceção quando não for possível coletar os
 	 * atributos.
 	 */
@@ -173,6 +186,10 @@ public class LDAPConverter {
 				if (ann == null)
 					continue;
 				
+				// considera apenas os atributos que possuirem permissão de escrita
+				if (ann.accessMode().equals(AttributeAccessMode.READ))
+					continue;
+				
 				LDAPAttributeConverter converter = (LDAPAttributeConverter)
 						ann.attributeConverter().newInstance();
 
@@ -191,6 +208,10 @@ public class LDAPConverter {
 				// pega a anotação da classe
 				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
 				if (ann == null)
+					continue;
+				
+				// considera apenas os atributos que possuirem permissão de escrita
+				if (ann.accessMode().equals(AttributeAccessMode.READ))
 					continue;
 				
 				LDAPAttributeConverter converter = (LDAPAttributeConverter)

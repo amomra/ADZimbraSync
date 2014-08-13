@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.naming.directory.SearchResult;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.AttributeAccessMode;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
@@ -24,16 +25,16 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
  */
 public abstract class ADEntry extends LDAPEntry {
 	
-	@LDAPAttribute
+	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected DN distinguishedName;
 	
-	@LDAPAttribute
+	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String sAMAccountName;
 	
-	@LDAPAttribute
+	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String cn;
 	
-	@LDAPAttribute
+	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected String name;
 	
 	@LDAPAttribute
@@ -42,7 +43,7 @@ public abstract class ADEntry extends LDAPEntry {
 	@LDAPAttribute( name = "memberOf" )
 	protected List<DN> memberOfGroups;
 	
-	@LDAPAttribute
+	@LDAPAttribute( accessMode = AttributeAccessMode.READ )
 	protected Date whenChanged;
 	
 	/**

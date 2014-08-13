@@ -33,4 +33,10 @@ public @interface LDAPAttribute {
 	 * como <code>String</code>.
 	 */
 	Class<?> attributeConverter() default LDAPAttributeConverter.class;
+	
+	/**
+	 * Propriedade que define o modo de acesso do atributo no LDAP. Por padrão
+	 * o atributo possui permissão de leitura e escrita.
+	 */
+	AttributeAccessMode accessMode() default AttributeAccessMode.READ_WRITE;
 }
