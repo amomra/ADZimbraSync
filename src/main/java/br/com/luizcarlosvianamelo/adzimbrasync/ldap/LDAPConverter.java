@@ -99,7 +99,8 @@ public class LDAPConverter {
 	 * Função que cria o mapa de atributos do LDAP com os seus respectivos
 	 * valores de acordo com o mapeamento dos campos passado.
 	 * @param obj O objeto que terá os seus campos mapeados para os atributos
-	 * do LDAP. Apenas os campos que estão definidos no mapeamento serão lidos.
+	 * do LDAP. Apenas os campos que estão definidos no mapeamento cujos os
+	 * valores são diferentes de <code>null</code> serão lidos.
 	 * @param attrMap A definição do mapeamento dos atributos do LDAP com os
 	 * campos do objeto. Caso haja vários mapeamentos para o mesmo atributo do
 	 * LDAP, apenas o último será considerado. 
@@ -125,8 +126,10 @@ public class LDAPConverter {
 				Field field = attrField.getValue();
 				field.setAccessible(true);
 
-				// faz o mapeamento do atributo com o valor do campo
-				mappedAttributes.put(attrName, field.get(obj));
+				Object value = field.get(obj);
+				if (value != null)
+					// faz o mapeamento do atributo com o valor do campo
+					mappedAttributes.put(attrName, value);
 			}
 		}
 
