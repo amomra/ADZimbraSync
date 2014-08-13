@@ -27,10 +27,10 @@ public @interface LDAPAttribute {
 	String name() default "";
 
 	/**
-	 * Propriedade que indica a classe do objeto que fará o parser do atributo
+	 * Propriedade que indica a classe do objeto que fará a conversão do atributo
 	 * do LDAP para o tipo do campo. O valor padrão é a classe
-	 * {@link LDAPAttributeParser}, sendo que esta trata os tipos não primitivos
+	 * {@link LDAPAttributeConverter}, sendo que esta trata os tipos não primitivos
 	 * como <code>String</code>.
 	 */
-	Class<?> attributeParser() default LDAPAttributeParser.class;
+	Class<?> attributeConverter() default LDAPAttributeConverter.class;
 }

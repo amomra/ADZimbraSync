@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.naming.directory.Attribute;
+import javax.naming.directory.BasicAttribute;
 
 /**
  * Classe que realiza a conversão do valor do atributo lido do LDAP para os
@@ -16,17 +17,60 @@ import javax.naming.directory.Attribute;
  * tornando necessária a realização da conversão para tipos específicos do Java.
  * Esta classe faz a conversão desta <code>String</code> para todos os tipos primitivos
  * utilizando as funções <code>parse</code> de cada um deles. Caso não seja um
- * tipo primitivo, o objeto a ser convertido não será alterado.
+ * tipo primitivo ou um tipo não tratado por esta classe o campo não será
+ * alterado.
  * 
  * @author Luiz Carlos Viana Melo
  *
  */
-public class LDAPAttributeParser {
+public class LDAPAttributeConverter {
 
 	/**
 	 * Construtor da classe.
 	 */
-	public LDAPAttributeParser() {
+	public LDAPAttributeConverter() {
+	}
+
+	/**
+	 * Função que faz a leitura do campo e converte o valor para que este possa
+	 * ser modificado no LDAP.
+	 * @param field O campo da classe a ser modificada.
+	 * @param obj O objeto contendo o valor.
+	 * @return O atributo do LDAP.
+	 * @throws Exception Lança exceção se não for possível retornar o valor.
+	 */
+	public Attribute getValueAsAttribute(Field field, Object obj) throws Exception {
+		// verifica se o valor do campo é null
+		Object fieldValue = field.get(obj);
+		if (fieldValue == null)
+			return null;
+		
+		// pega o annotation do campo do LDAP para verificar o nome do atributo
+		// do LDAP associado ao campo
+		LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
+		if (ann == null)
+			throw new Exception(String.format("Can't find LDAPAttribute annotation in field: %s", field.getName()));
+		
+		String attrName = ann.name();
+		if (attrName.length() == 0)
+			attrName = field.getName();
+		
+		// cria o atributo a ser modificado
+		BasicAttribute attr = new BasicAttribute(attrName);
+		
+		// verifica se o tipo do campo é uma lista
+		if (fieldValue instanceof List) {
+			// faz o cast para List
+			List<?> values = (List<?>) fieldValue;
+			for (Object value : values) {
+				// adiciona no atributo se ele for diferente de null
+				if (value != null)
+					attr.add(value);
+			}
+		} else
+			// adiciona o valor
+			attr.add(fieldValue);
+		return attr;
 	}
 
 	/**
@@ -56,7 +100,7 @@ public class LDAPAttributeParser {
 			field.setBoolean(obj, Boolean.parseBoolean((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um byte.
@@ -84,7 +128,7 @@ public class LDAPAttributeParser {
 			field.setByte(obj, Byte.parseByte((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um caracter.
@@ -112,7 +156,7 @@ public class LDAPAttributeParser {
 			field.setChar(obj, ((String) attribute.get()).charAt(0));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 16 bits.
@@ -140,7 +184,7 @@ public class LDAPAttributeParser {
 			field.setShort(obj, Short.parseShort((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 32 bits.
@@ -168,7 +212,7 @@ public class LDAPAttributeParser {
 			field.setInt(obj, Integer.parseInt((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um inteiro de 64 bits.
@@ -196,7 +240,7 @@ public class LDAPAttributeParser {
 			field.setLong(obj, Long.parseLong((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um ponto flutuante de 32 bits.
@@ -224,7 +268,7 @@ public class LDAPAttributeParser {
 			field.setFloat(obj, Float.parseFloat((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um ponto flutuante de 64 bits.
@@ -252,7 +296,7 @@ public class LDAPAttributeParser {
 			field.setDouble(obj, Double.parseDouble((String) attribute.get()));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um {@link String}.
@@ -270,14 +314,14 @@ public class LDAPAttributeParser {
 		 * Ref: http://docs.oracle.com/javase/jndi/tutorial/ldap/misc/attrs.html
 		 */
 		field.setAccessible(true);
-		
+
 		// verifica se o tipo do campo é uma lista
 		if (field.getType() == List.class) {
 			// cria uma lista de strings com os valores dos campos
 			List<String> attrValues = new ArrayList<>();
 			for (int i = 0; i < attribute.size(); i++)
 				attrValues.add((String) attribute.get(i));
-			
+
 			// ajusta a lista
 			field.set(obj, attrValues);
 		} else {
@@ -285,7 +329,7 @@ public class LDAPAttributeParser {
 			field.set(obj, attribute.get());
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um {@link Date}.
@@ -298,7 +342,7 @@ public class LDAPAttributeParser {
 	 */
 	public void parseAsDate(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
-		
+
 		// cria o parser para a data vinda do LDAP
 		SimpleDateFormat dateFormater = new SimpleDateFormat("yyyyMMddHHmmss");
 		dateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -309,7 +353,7 @@ public class LDAPAttributeParser {
 			List<Date> attrValues = new ArrayList<>();
 			for (int i = 0; i < attribute.size(); i++) {
 				String dateString = (String) attribute.get(i);
-				
+
 				attrValues.add(dateFormater.parse(dateString));
 			}
 
@@ -321,7 +365,7 @@ public class LDAPAttributeParser {
 			field.set(obj, dateFormater.parse(dateString));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um {@link DN}.
@@ -341,7 +385,7 @@ public class LDAPAttributeParser {
 			List<DN> attrValues = new ArrayList<>();
 			for (int i = 0; i < attribute.size(); i++) {
 				String dnString = (String) attribute.get(i);
-				
+
 				attrValues.add(DN.parse(dnString));
 			}
 
@@ -353,7 +397,7 @@ public class LDAPAttributeParser {
 			field.set(obj, DN.parse(dnString));
 		}
 	}
-	
+
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um objeto Java. Por

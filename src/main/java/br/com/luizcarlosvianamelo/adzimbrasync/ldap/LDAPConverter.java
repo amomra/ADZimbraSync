@@ -3,6 +3,7 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -26,7 +27,7 @@ import javax.naming.directory.SearchResult;
 public class LDAPConverter {
 
 	/**
-	 * Função que realiza a conversão de uma entrasda do LDAP retornado de uma
+	 * Função que realiza a conversão de uma entrada do LDAP retornado de uma
 	 * busca na árvore para um objeto Java.
 	 * @param objType O objeto do tipo {@link Class} correspondente ao tipo do
 	 * objeto a ser retornado pela função. O tipo do objeto deverá uma classe
@@ -55,7 +56,7 @@ public class LDAPConverter {
 				Field field = attrField.getValue();
 				// pega a anotação informando a classe de conversão do atributo
 				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
-				LDAPAttributeParser parser = (LDAPAttributeParser) attrAnn.attributeParser().newInstance();
+				LDAPAttributeConverter parser = (LDAPAttributeConverter) attrAnn.attributeConverter().newInstance();
 
 				// verifica o tipo para chamar a função de conversão
 				Type fieldType = field.getType();
@@ -134,5 +135,72 @@ public class LDAPConverter {
 		}
 
 		return mappedAttributes;
+	}
+	
+	/**
+	 * Função que retorna a lista de atributos do LDAP contidos no objeto
+	 * passado.
+	 * @param obj O objeto de onde serão coletados os atributos.
+	 * @param attributesNames A lista com os nomes dos atributos que serão
+	 * coletados. Caso esta seja vazia, serão coletados todos os atributos.
+	 * @return Retorna a lista com os atributos contidos na lista de nomes
+	 * que não estão com o valor igual a <code>null</code>. Pode retornar
+	 * uma lista vazia caso a condição citada não tenha sido atendida.
+	 * @throws Exception Lança exceção quando não for possível coletar os
+	 * atributos.
+	 */
+	public static <ObjectType extends LDAPEntry>
+	List<Attribute> getEntryAttributes(ObjectType obj, String... attributesNames) throws Exception {
+		List<Attribute> attributes = new ArrayList<>();
+		
+		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
+		
+		/*
+		 * Serão modificados apenas os atributos que estiverem na lista de
+		 * atributos a serem modificados e se o seus valores não forem
+		 * nulos.
+		 */
+		if (attributesNames.length > 0) {
+			for (String attrName : attributesNames) {
+				Field field = attrFields.get(attrName);
+				// ignora o atributo se ele não exisitr na classe
+				if (field == null)
+					continue;
+				
+				field.setAccessible(true);
+				// pega a anotação da classe
+				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
+				if (ann == null)
+					continue;
+				
+				LDAPAttributeConverter converter = (LDAPAttributeConverter)
+						ann.attributeConverter().newInstance();
+
+				// adiciona na lista o atributo
+				attributes.add(converter.getValueAsAttribute(field, obj));
+			}
+		} else {
+			/*
+			 * Se não forem especificados os atributos que serão modificado,
+			 * então considera que todos eles serão.
+			 */
+			for (Entry<String, Field> attrField : attrFields.entrySet()) {
+				Field field = attrField.getValue();
+				field.setAccessible(true);
+				
+				// pega a anotação da classe
+				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
+				if (ann == null)
+					continue;
+				
+				LDAPAttributeConverter converter = (LDAPAttributeConverter)
+						ann.attributeConverter().newInstance();
+
+				// adiciona na lista o atributo
+				attributes.add(converter.getValueAsAttribute(field, obj));
+			}
+		}
+		
+		return attributes;
 	}
 }

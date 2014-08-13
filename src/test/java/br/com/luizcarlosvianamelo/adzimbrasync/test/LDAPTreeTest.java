@@ -16,6 +16,7 @@ import javax.naming.directory.SearchResult;
 
 import org.junit.Test;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPTree;
 
 public class LDAPTreeTest {
@@ -152,11 +153,12 @@ public class LDAPTreeTest {
 		attr = entry.getAttributes().get("distinguishedName");
 		assertNotNull("Usuário \"usuario\" não possui o atributo \"distinguishedName\" ajustado. Tem alguma coisa muito errada o.O", attr);
 		String dn = (String) attr.get();
+		DN dnObj = DN.parse(dn);
 		
 		// ajusta o novo valor do sn
 		ModificationItem [] itens = new ModificationItem[1];
 		itens[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("sn", snNew));
-		ldapTree.modify(dn, itens);
+		ldapTree.modify(dnObj, itens);
 		
 		// faz a consulta novamente do valor do atributo
 		result = ldapTree.search("(sAMAccountName=usuario)", "sn");
@@ -175,7 +177,7 @@ public class LDAPTreeTest {
 		
 		// ajusta o valor anterior
 		itens[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("sn", sn));
-		ldapTree.modify(dn, itens);
+		ldapTree.modify(dnObj, itens);
 			
 		
 		// desconecta

@@ -95,7 +95,7 @@ public abstract class LDAPEntry {
 	 * Função que retorna o formato da <i>query</i> usada para buscar um tipo
 	 * específico de entrada do LDAP. Esta <i>query</i>
 	 * deve conter um marcador de {@link String} para que ela seja acrescida de
-	 * uma <i>subquery</i> na função convert, sendo que esta última pode ser uma
+	 * uma <i>subquery</i> na função de busca, sendo que esta última pode ser uma
 	 * <i>string</i> vazia. A <i>query</i> e o marcador deverão estar no formato
 	 * suportado pela função {@link String#format(String, Object...)}.
 	 * <p>Exemplo de <i>query</i>: <code>"(&(objectCategory=Person)%s)"</code>

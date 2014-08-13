@@ -187,7 +187,7 @@ public class ADUsersRepository {
 		byte[] encodedPassword = quotedPassword.getBytes("UTF-16LE");
 		
 		// ajusta a senha
-		this.adTree.modify(user.getDistinguishedName().toString(),
+		this.adTree.modify(user.getDistinguishedName(),
 				new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
 						new BasicAttribute("unicodePwd", encodedPassword)));
 	}
