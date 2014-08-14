@@ -1,12 +1,9 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -209,38 +206,8 @@ public abstract class LDAPEntry {
 
 				LDAPAttributeConverter parser = (LDAPAttributeConverter) attrAnn.attributeConverter().newInstance();
 
-				// verifica o tipo para chamar a função de conversão
-				Type fieldType = field.getType();
-				// se for uma lista, pega o tipo interno
-				if (fieldType.equals(List.class))
-					fieldType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-
-				// faz a chamada do parser para os tipos primitivos
-				if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class))
-					parser.parseAsBoolean(field, obj, attr);
-				else if (fieldType.equals(byte.class) || fieldType.equals(Byte.class))
-					parser.parseAsByte(field, obj, attr);
-				else if (fieldType.equals(char.class) || fieldType.equals(Character.class))
-					parser.parseAsChar(field, obj, attr);
-				else if (fieldType.equals(short.class) || fieldType.equals(Short.class))
-					parser.parseAsShort(field, obj, attr);
-				else if (fieldType.equals(int.class) || fieldType.equals(Integer.class))
-					parser.parseAsInt(field, obj, attr);
-				else if (fieldType.equals(long.class) || fieldType.equals(Long.class))
-					parser.parseAsLong(field, obj, attr);
-				else if (fieldType.equals(float.class) || fieldType.equals(Float.class))
-					parser.parseAsFloat(field, obj, attr);
-				else if (fieldType.equals(double.class) || fieldType.equals(Double.class))
-					parser.parseAsDouble(field, obj, attr);
-				else if (fieldType.equals(String.class)) // inicio do parser dos tipos não primitivos
-					parser.parseAsString(field, obj, attr);
-				else if (fieldType.equals(Date.class))
-					parser.parseAsDate(field, obj, attr);
-				else if (fieldType.equals(DN.class))
-					parser.parseAsDN(field, obj, attr);
-				else
-					// faz o parser como um objeto customizado
-					parser.parseAsCustomObject(field, obj, attr);
+				// chama a função de conversão
+				parser.parseAttribute(field, obj, attr);				
 			}
 		}
 

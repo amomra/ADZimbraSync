@@ -1,6 +1,8 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,20 +46,20 @@ public class LDAPAttributeConverter {
 		Object fieldValue = field.get(obj);
 		if (fieldValue == null)
 			return null;
-		
+
 		// pega o annotation do campo do LDAP para verificar o nome do atributo
 		// do LDAP associado ao campo
 		LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
 		if (ann == null)
 			throw new Exception(String.format("Can't find LDAPAttribute annotation in field: %s", field.getName()));
-		
+
 		String attrName = ann.name();
 		if (attrName.length() == 0)
 			attrName = field.getName();
-		
+
 		// cria o atributo a ser modificado
 		BasicAttribute attr = new BasicAttribute(attrName);
-		
+
 		// verifica se o tipo do campo é uma lista
 		if (fieldValue instanceof List) {
 			// faz o cast para List
@@ -75,6 +77,66 @@ public class LDAPAttributeConverter {
 
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um objeto Java.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	public final void parseAttribute(Field field, Object obj, Attribute attribute) throws Exception {
+		// verifica o tipo para chamar a função de conversão
+		Type fieldType = field.getType();
+		// se for uma lista, pega o tipo interno
+		if (fieldType.equals(List.class))
+			fieldType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+		// faz a chamada do parser para os tipos primitivos
+		if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class))
+			this.parseAttributeAsBoolean(field, obj, attribute);
+		else if (fieldType.equals(byte.class) || fieldType.equals(Byte.class))
+			this.parseAttributeAsByte(field, obj, attribute);
+		else if (fieldType.equals(char.class) || fieldType.equals(Character.class))
+			this.parseAttributeAsChar(field, obj, attribute);
+		else if (fieldType.equals(short.class) || fieldType.equals(Short.class))
+			this.parseAttributeAsShort(field, obj, attribute);
+		else if (fieldType.equals(int.class) || fieldType.equals(Integer.class))
+			this.parseAttributeAsInt(field, obj, attribute);
+		else if (fieldType.equals(long.class) || fieldType.equals(Long.class))
+			this.parseAttributeAsLong(field, obj, attribute);
+		else if (fieldType.equals(float.class) || fieldType.equals(Float.class))
+			this.parseAttributeAsFloat(field, obj, attribute);
+		else if (fieldType.equals(double.class) || fieldType.equals(Double.class))
+			this.parseAttributeAsDouble(field, obj, attribute);
+		else if (fieldType.equals(String.class)) // inicio do this dos tipos não primitivos
+			this.parseAttributeAsString(field, obj, attribute);
+		else if (fieldType.equals(Date.class))
+			this.parseAttributeAsDate(field, obj, attribute);
+		else if (fieldType.equals(DN.class))
+			this.parseAttributeAsDN(field, obj, attribute);
+		else
+			// faz o parser como um objeto customizado
+			this.parseAttributeAsCustomObject(field, obj, attribute);
+	}
+
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
+	 * do LDAP e armazena o resultado no campo desejado como um objeto Java. Por
+	 * padrão, esta função irá fazer a conversão do objeto para {@link String}.
+	 * @param field O campo do objeto que irá receber o resultado da conversão.
+	 * @param obj O objeto que terá o seu campo alterado com o resultado da
+	 * conversão.
+	 * @param attribute O atributo lido do LDAP.
+	 * @throws Exception Lança uma exceção quando não for possível ajustar o
+	 * valor do campo com o valor do atributo.
+	 */
+	protected void parseAttributeAsCustomObject(Field field, Object obj, Attribute attribute) throws Exception {
+		this.parseAttributeAsString(field, obj, attribute);
+	}
+	
+	/**
+	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um booleano.
 	 * @param field O campo do objeto que irá receber o resultado da conversão.
 	 * @param obj O objeto que terá o seu campo alterado com o resultado da
@@ -83,7 +145,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsBoolean(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsBoolean(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -111,7 +173,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsByte(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsByte(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -139,7 +201,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsChar(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsChar(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -167,7 +229,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsShort(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsShort(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -195,7 +257,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsInt(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsInt(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -223,7 +285,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsLong(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsLong(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -251,7 +313,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsFloat(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsFloat(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -279,7 +341,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsDouble(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsDouble(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -307,7 +369,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsString(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsString(Field field, Object obj, Attribute attribute) throws Exception {
 		/*
 		 * Por padrão, a biblioteca de LDAP do Java trata todos os atributos
 		 * como String.
@@ -340,7 +402,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsDate(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsDate(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// cria o parser para a data vinda do LDAP
@@ -376,7 +438,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public final void parseAsDN(Field field, Object obj, Attribute attribute) throws Exception {
+	private final void parseAttributeAsDN(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -396,20 +458,5 @@ public class LDAPAttributeConverter {
 			// apenas ajusta o valor do campo
 			field.set(obj, DN.parse(dnString));
 		}
-	}
-
-	/**
-	 * Função que faz o parser do objeto com o valor do atributo lido pela API
-	 * do LDAP e armazena o resultado no campo desejado como um objeto Java. Por
-	 * padrão, esta função irá fazer a conversão do objeto para {@link String}.
-	 * @param field O campo do objeto que irá receber o resultado da conversão.
-	 * @param obj O objeto que terá o seu campo alterado com o resultado da
-	 * conversão.
-	 * @param attribute O atributo lido do LDAP.
-	 * @throws Exception Lança uma exceção quando não for possível ajustar o
-	 * valor do campo com o valor do atributo.
-	 */
-	public void parseAsCustomObject(Field field, Object obj, Attribute attribute) throws Exception {
-		this.parseAsString(field, obj, attribute);
 	}
 }
