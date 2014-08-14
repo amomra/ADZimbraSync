@@ -1,14 +1,13 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.zimbra;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADGroup;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADTree;
 import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADUser;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.AttributeAccessMode;
 
 import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.common.util.ZimbraLog;
@@ -25,66 +24,6 @@ import com.zimbra.cs.account.Provisioning;
  *
  */
 public class ADAutoProvision {
-
-	/**
-	 * Classe interna que contém o mapeamento dos atributos do AD para os
-	 * atributos do Zimbra.
-	 * 
-	 * @author Luiz Carlos Viana Melo
-	 *
-	 */
-	static class ZimbraAttributeMapper {
-		@SuppressWarnings("serial")
-		private static final Map<String, String> DEFAULT_ZIMBRA_AD_USER_ATTR_MAP = new HashMap<String, String>() {{
-			put("cn", "cn");
-			put("name", "displayName");
-			put("givenName", "givenName");
-			put("sn", "sn");
-			put("distinguishedName", "zimbraAuthLdapExternalDn");
-		}};
-		
-		@SuppressWarnings("serial")
-		private static final Map<String, String> DEFAULT_ZIMBRA_AD_GROUP_ATTR_MAP = new HashMap<String, String>() {{
-			
-		}};
-
-
-		/**
-		 * Função que retorna o mapeamento dos atributos do usuário do AD com
-		 * os atributos do Zimbra.
-		 * @return A lista associativa com o mapeamento dos atributos. A chave
-		 * desta será o nome do atributo no AD enquanto o valor será o nome do
-		 * atributo no Zimbra.
-		 */
-		public static Map<String, String> getUserAttributeMapping() {
-			return ZimbraAttributeMapper.DEFAULT_ZIMBRA_AD_USER_ATTR_MAP;
-		}
-		
-		/**
-		 * Função que retorna o mapeamento dos atributos do usuário do AD com
-		 * os atributos do Zimbra. Também coleta o mapeamento configurado no
-		 * atributo <code>zimbraAutoProvAttrMap</code>.
-		 * @param domain O domínio onde está configurado o mapeamento.
-		 * @return A lista associativa com o mapeamento dos atributos. A chave
-		 * desta será o nome do atributo no AD enquanto o valor será o nome do
-		 * atributo no Zimbra.
-		 */
-		public static Map<String, String> getUserAttributeMapping(Domain domain) {
-			// TODO Buscar a lista de atributos mapeados do domínio
-			return ZimbraAttributeMapper.DEFAULT_ZIMBRA_AD_USER_ATTR_MAP;
-		}
-		
-		/**
-		 * Função que retorna o mapeamento dos atributos do grupo do AD com
-		 * os atributos do Zimbra.
-		 * @return A lista associativa com o mapeamento dos atributos. A chave
-		 * desta será o nome do atributo no AD enquanto o valor será o nome do
-		 * atributo no Zimbra.
-		 */
-		public static Map<String, String> getGroupAttributeMapping() {
-			return ZimbraAttributeMapper.DEFAULT_ZIMBRA_AD_GROUP_ATTR_MAP;
-		}
-	}
 
 	protected ADProvisioning prov;
 
@@ -141,8 +80,9 @@ public class ADAutoProvision {
 	 */
 	public synchronized Account autoProvisionAccount(Domain domain, ADUser user) throws Exception {
 		// pega o mapeamento dos campos
-		Map<String, String> attrMap = ZimbraAttributeMapper.getUserAttributeMapping(domain);
-		Map<String, Object> attrValues = LDAPConverter.mapFieldsIntoAttributes(user, attrMap);
+		Map<String, String> attrMap = ZimbraLDAPMapper.getUserAttributeMapping(domain);
+		Map<String, Object> attrValues = ZimbraLDAPMapper.mapObjectFieldsIntoAttributes(user,
+				AttributeAccessMode.READ, attrMap);
 		
 		// TODO Checar se a conta está ativa
 		attrValues.put(Provisioning.A_zimbraMailStatus, Provisioning.MAIL_STATUS_ENABLED);
@@ -187,8 +127,9 @@ public class ADAutoProvision {
 	public synchronized DistributionList autoProvisionDistributionList(Domain domain, ADGroup distributionList, List<ADUser> groupUsers)
 			throws Exception {
 		// pega o mapeamento dos campos
-		Map<String, String> attrMap = ZimbraAttributeMapper.getGroupAttributeMapping();
-		Map<String, Object> attrValues = LDAPConverter.mapFieldsIntoAttributes(distributionList, attrMap);
+		Map<String, String> attrMap = ZimbraLDAPMapper.getGroupAttributeMapping();
+		Map<String, Object> attrValues = ZimbraLDAPMapper.mapObjectFieldsIntoAttributes(distributionList,
+				AttributeAccessMode.READ, attrMap);
 		
 		// monta a lista de usuários
 		String[] mailList = new String[groupUsers.size()];

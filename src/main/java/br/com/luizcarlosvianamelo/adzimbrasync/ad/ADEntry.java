@@ -3,12 +3,11 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.directory.SearchResult;
+import javax.naming.directory.Attributes;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.AttributeAccessMode;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPConverter;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 
 /**
@@ -18,7 +17,7 @@ import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
  * que são comuns aos vários tipos de entidades suportadas pelo AD. Um objeto
  * desta classe pode ser obtido a partir do resultado de uma consulta do LDAP
  * através da chamada da função de conversão
- * {@link LDAPConverter#convert(Class, SearchResult) convert}.
+ * {@link LDAPEntry#parseEntry(Class, Attributes) parseEntry}.
  * 
  * @author Luiz Carlos Viana Melo
  *

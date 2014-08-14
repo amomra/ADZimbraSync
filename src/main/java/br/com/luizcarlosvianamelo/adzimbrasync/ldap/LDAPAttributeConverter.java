@@ -39,7 +39,7 @@ public class LDAPAttributeConverter {
 	 * @return O atributo do LDAP.
 	 * @throws Exception Lança exceção se não for possível retornar o valor.
 	 */
-	public Attribute getValueAsAttribute(Field field, Object obj) throws Exception {
+	public final Attribute getValueAsAttribute(Field field, Object obj) throws Exception {
 		// verifica se o valor do campo é null
 		Object fieldValue = field.get(obj);
 		if (fieldValue == null)
@@ -83,7 +83,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsBoolean(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsBoolean(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -111,7 +111,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsByte(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsByte(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -139,7 +139,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsChar(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsChar(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -167,7 +167,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsShort(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsShort(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -195,7 +195,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsInt(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsInt(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -223,7 +223,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsLong(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsLong(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -251,7 +251,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsFloat(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsFloat(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -279,7 +279,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsDouble(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsDouble(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -307,7 +307,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsString(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsString(Field field, Object obj, Attribute attribute) throws Exception {
 		/*
 		 * Por padrão, a biblioteca de LDAP do Java trata todos os atributos
 		 * como String.
@@ -340,7 +340,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsDate(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsDate(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// cria o parser para a data vinda do LDAP
@@ -376,7 +376,7 @@ public class LDAPAttributeConverter {
 	 * @throws Exception Lança uma exceção quando não for possível ajustar o
 	 * valor do campo com o valor do atributo.
 	 */
-	public void parseAsDN(Field field, Object obj, Attribute attribute) throws Exception {
+	public final void parseAsDN(Field field, Object obj, Attribute attribute) throws Exception {
 		field.setAccessible(true);
 
 		// verifica se o tipo do campo é uma lista
@@ -401,8 +401,7 @@ public class LDAPAttributeConverter {
 	/**
 	 * Função que faz o parser do objeto com o valor do atributo lido pela API
 	 * do LDAP e armazena o resultado no campo desejado como um objeto Java. Por
-	 * padrão, esta classe não é capaz de fazer a conversão do objeto. Logo, o
-	 * valor do campo será ajustado para <code>null</code>.
+	 * padrão, esta função irá fazer a conversão do objeto para {@link String}.
 	 * @param field O campo do objeto que irá receber o resultado da conversão.
 	 * @param obj O objeto que terá o seu campo alterado com o resultado da
 	 * conversão.
@@ -411,11 +410,6 @@ public class LDAPAttributeConverter {
 	 * valor do campo com o valor do atributo.
 	 */
 	public void parseAsCustomObject(Field field, Object obj, Attribute attribute) throws Exception {
-		/*
-		 * Apenas ajusta o campo com o valor nulo já que esta classe não suporta
-		 * a conversão de outras classes que não sejam do Java.
-		 */
-		field.setAccessible(true);
-		field.set(obj, null);
+		this.parseAsString(field, obj, attribute);
 	}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.ModificationItem;
@@ -258,7 +258,7 @@ public class LDAPTree {
 
 			SearchResult entry = result.nextElement();
 
-			ObjectType ldapEntry = LDAPConverter.convert(objType, entry);
+			ObjectType ldapEntry = LDAPEntry.parseEntry(objType, entry.getAttributes());
 			// adiciona na lista
 			ldapEntries.add(ldapEntry);
 		}
@@ -284,6 +284,23 @@ public class LDAPTree {
 	}
 	
 	/**
+	 * Função que modifica os valores dos atributos de uma entrada do LDAP.
+	 * @param dn O DN da entrada do LDAP que será modificado.
+	 * @param attrsToBeModified A lista de atributos da entrada que serão
+	 * modificados.
+	 * @throws Exception Lança uma exceção quando não for possível realizar a
+	 * alteração.
+	 */
+	public void modify(DN dn, Attributes attrsToBeModified) throws Exception {
+		// lança exceção se não estiver conectado
+		if (!this.isConnected())
+			throw new Exception("Not connected to LDAP server");
+		
+		// modifica os atributos
+		this.ldapContext.modifyAttributes(dn.toString(), DirContext.REPLACE_ATTRIBUTE, attrsToBeModified);
+	}
+	
+	/**
 	 * Função que modifica os valores dos atributos de uma entrada do LDAP com
 	 * base no objeto Java.
 	 * @param dn O DN da entrada do LDAP que será modificado.
@@ -296,16 +313,12 @@ public class LDAPTree {
 	public <ObjectType extends LDAPEntry> void modify(DN dn, ObjectType obj, String... attrsToBeModified)
 			throws Exception {
 		// pega a lista de atributos que serão modificados
-		List<Attribute> attrs = LDAPConverter.getEntryAttributes(obj, attrsToBeModified);
+		Attributes attrs = obj.getLDAPAttributes(AttributeAccessMode.WRITE, attrsToBeModified);
 		// se a lista não estiver vazia
 		if (attrs.size() > 0) {
-			// cria os itens de modificação
-			ModificationItem[] itens = new ModificationItem[attrs.size()];
-			for (int i = 0; i < itens.length; i++)
-				itens[i] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attrs.get(i));
 			
 			// faz a mudança
-			this.modify(dn, itens);
+			this.modify(dn, attrs);
 		}
 	}
 }
