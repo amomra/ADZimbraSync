@@ -1,5 +1,6 @@
 package br.com.luizcarlosvianamelo.adzimbrasync;
 
+import br.com.luizcarlosvianamelo.adzimbrasync.ad.ADTree;
 import br.com.luizcarlosvianamelo.adzimbrasync.zimbra.ADChangePasswordListener;
 import br.com.luizcarlosvianamelo.adzimbrasync.zimbra.ADCustomAuth;
 
@@ -36,6 +37,9 @@ public class ADZimbraSync implements ZimbraExtension {
 	 */
 	@Override
 	public void init() throws ExtensionException, ServiceException {
+		// ajusta a pasta de certificados
+		ADTree.setSSLCertificatesPath("/opt/zimbra/java/jre/lib/security/cacerts", "changeit");
+		
 		// registra o objeto que irá tratar a mudança de senha do usuário no AD
 		ChangePasswordListener.register("ADZimbraSyncPasswordChanger", new ADChangePasswordListener());
 		// registra o método de autenticação do AD

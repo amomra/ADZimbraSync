@@ -60,7 +60,7 @@ public class ADAttributeManager extends AttributeManager {
 			Domain domain = prov.getDomain(acct);
 
 			// busca o usuário no AD
-			ADTree adTree = ADAutoProvision.openDomainADConnection(domain);
+			ADTree adTree = ADConnectionManager.openDomainADConnection(domain);
 			if (adTree == null) {
 				ZimbraLog.account.error(String.format("AD - Can't connect AD to modify user \"%s\"", acct.getUid()));
 				return;

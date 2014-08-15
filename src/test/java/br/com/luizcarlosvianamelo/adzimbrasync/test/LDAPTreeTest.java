@@ -57,7 +57,7 @@ public class LDAPTreeTest {
 				this.prop.getLDAPSearchBindPassword());
 
 		// ajusta a pasta onde estão incluídos os certificados do servidor
-		ldapTree.setSSLCertificatesPath(
+		LDAPTree.setSSLCertificatesPath(
 				this.prop.getLDAPCertificatePath(),
 				this.prop.getLDAPCertificateFilePassword());
 

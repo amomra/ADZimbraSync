@@ -118,7 +118,7 @@ public class ADUsersRepositoryTest {
 				this.prop.getLDAPSearchBindPassword());
 
 		// ajusta a pasta onde estão incluídos os certificados do servidor
-		adTree.setSSLCertificatesPath(
+		ADTree.setSSLCertificatesPath(
 				this.prop.getLDAPCertificatePath(),
 				this.prop.getLDAPCertificateFilePassword());
 

@@ -61,6 +61,19 @@ public class LDAPTree {
 		this.ldapSearchBindDn = ldapSearchBindDn;
 		this.ldapSearchBindPassword = ldapSearchBindPassword;
 	}
+	
+	/**
+	 * Função que ajusta o caminho das pastas onde estão inclusos os
+	 * certificados do servidor LDAP. Estes são utilizados para a realização
+	 * de uma conexão segura com o servidor.
+	 * @param certPath O caminho da pasta de certificados.
+	 * @param certPassword A senha do arquivo de certificados.
+	 */
+	public static void setSSLCertificatesPath(String certPath, String certPassword) {
+		// ajusta o caminho no SO com as chaves para o servidor
+		System.setProperty("javax.net.ssl.trustStore", certPath);
+		System.setProperty("javax.net.ssl.trustStorePassword", certPassword);
+	}
 
 	/**
 	 * Retorna o endereço do servidor LDAP.
@@ -120,19 +133,6 @@ public class LDAPTree {
 	 */
 	public void setLdapSearchBindPassword(String ldapSearchBindPassword) {
 		this.ldapSearchBindPassword = ldapSearchBindPassword;
-	}
-
-	/**
-	 * Função que ajusta o caminho das pastas onde estão inclusos os
-	 * certificados do servidor LDAP. Estes são utilizados para a realização
-	 * de uma conexão segura com o servidor.
-	 * @param certPath O caminho da pasta de certificados.
-	 * @param certPassword A senha do arquivo de certificados.
-	 */
-	public void setSSLCertificatesPath(String certPath, String certPassword) {
-		// ajusta o caminho no SO com as chaves para o servidor
-		System.setProperty("javax.net.ssl.trustStore", certPath);
-		System.setProperty("javax.net.ssl.trustStorePassword", certPassword);
 	}
 
 	/**
