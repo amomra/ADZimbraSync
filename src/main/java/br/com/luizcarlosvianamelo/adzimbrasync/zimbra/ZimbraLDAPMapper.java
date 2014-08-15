@@ -130,7 +130,39 @@ public class ZimbraLDAPMapper {
 	 * campos do objeto.
 	 */
 	public static <ObjectType extends LDAPEntry>
-	void fillAttributesIntoObjectFields(ObjectType obj, Map<String, ?> attributes,
+	void fillAttributesIntoObjectFields(ObjectType obj, Map<String, ? extends Object> attributes,
 			Map<String, String> attrMap) throws Exception {
+		// retorna os campos do objeto
+		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
+		
+		for (Entry<String, Field> attrField : attrFields.entrySet()) {			
+			// pega o atributo do zimbra ao qual o campo está associado
+			String attributeName = attrMap.get(attrField.getKey());
+			// ignora o campo se não existir o mapeamento
+			if (attributeName != null) {
+				Field field = attrField.getValue();
+				field.setAccessible(true);
+				
+				// pega o valor do atributo
+				Object value = attributes.get(attributeName);
+				if (value == null)
+					// ignora os valores nulos
+					continue;
+				
+				// ajusta o valor do campo
+				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
+				if (attrAnn == null || !attrAnn.accessMode().haveRequestedPermission(AttributeAccessMode.WRITE))
+					/*
+					 * Ignora os valores nulos e se o campo não estiver
+					 * habilitado para escrita
+					 */
+					continue;
+				
+				// TODO Fazer lógica de conversão das informações a serem ajustadas no Zimbra
+				
+				// ajusta o valor
+				field.set(obj, value);
+			}
+		}
 	}
 }

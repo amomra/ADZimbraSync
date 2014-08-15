@@ -2,6 +2,7 @@ package br.com.luizcarlosvianamelo.adzimbrasync.test;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -63,5 +64,28 @@ public class ZimbraLDAPMapperTest {
 			// verifica se o atributo foi mapeado corretamente
 			assertNotNull("O mapeamento não foi feito corretamente já que o campo \"dn\" está nulo", dn);
 		}
+	}
+	
+	@Test
+	public void testFillAttributesIntoObjectFields() throws Exception {
+		System.out.println(" testFillAttributesIntoObjectFields ------");
+		
+		// retorna o mapeamento dos atributos
+		Map<String, String> attrMap = ZimbraLDAPMapper.getUserAttributeMapping();
+		
+		// cria a lista de atributos modificados
+		Map<String, Object> modAttrs = new HashMap<>();
+		modAttrs.put("givenName", "teste");
+		modAttrs.put("sn", "teste2");
+		
+		// preenche o objeto
+		ADUser user = new ADUser();
+		
+		ZimbraLDAPMapper.fillAttributesIntoObjectFields(user, modAttrs, attrMap);
+		
+		// verifica se o objeto foi preenchido
+		assertEquals("O campo \"givenName\" não foi ajustado corretamente" , "teste", user.getGivenName());
+		assertEquals("O campo \"sn\" não foi ajustado corretamente" , "teste2", user.getSn());
+		
 	}
 }
