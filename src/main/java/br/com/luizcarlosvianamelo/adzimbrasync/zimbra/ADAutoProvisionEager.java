@@ -104,7 +104,7 @@ public class ADAutoProvisionEager extends ADAutoProvision {
 		// se conecta com o servidor AD
 		ZimbraLog.autoprov.debug("AD - Connecting to domain %s", domain.getName());
 
-		ADTree adTree = this.openDomainADConnection(domain);
+		ADTree adTree = ADAutoProvision.openDomainADConnection(domain);
 		if (adTree == null) {
 			ZimbraLog.autoprov.warn("AD - Can't connect to domain %s. Accounts from it will not be provisioned.",
 					domain.getName());

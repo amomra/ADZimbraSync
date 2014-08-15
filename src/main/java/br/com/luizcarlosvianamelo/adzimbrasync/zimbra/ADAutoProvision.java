@@ -43,7 +43,7 @@ public class ADAutoProvision {
 	 * conectar, retorna <code>null</code>.
 	 * @throws Exception Lança uma exceção quando ocorre um erro na conexão.
 	 */
-	protected ADTree openDomainADConnection(Domain domain) throws Exception {
+	public static ADTree openDomainADConnection(Domain domain) throws Exception {
 		// se conectando com o servidor AD do domínio
 		String adURL = domain.getAutoProvLdapURL();
 		String adBindDn = domain.getAutoProvLdapAdminBindDn();

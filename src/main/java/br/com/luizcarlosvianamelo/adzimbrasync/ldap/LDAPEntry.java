@@ -141,7 +141,9 @@ public abstract class LDAPEntry {
 						ann.attributeConverter().newInstance();
 
 				// adiciona na lista o atributo
-				attributes.put(converter.getValueAsAttribute(field, this));
+				Attribute attr = converter.getValueAsAttribute(field, this);
+				if (attr != null)
+					attributes.put(attr);
 			}
 		} else {
 			/*
@@ -165,7 +167,9 @@ public abstract class LDAPEntry {
 						ann.attributeConverter().newInstance();
 
 				// adiciona na lista o atributo
-				attributes.put(converter.getValueAsAttribute(field, this));
+				Attribute attr = converter.getValueAsAttribute(field, this);
+				if (attr != null)
+					attributes.put(attr);
 			}
 		}
 
