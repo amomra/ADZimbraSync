@@ -1,7 +1,6 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.ldap;
 
 import java.lang.reflect.Field;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -11,6 +10,7 @@ import java.util.Map.Entry;
 
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
 /**
@@ -69,30 +69,27 @@ public abstract class LDAPEntry {
 	 * @return A lista associativa onde a chave é o nome do atributo do LDAP e
 	 * o valor o campo da classe associado ao atributo.
 	 */
-	public Map<String, Field> getLDAPAttributesFields() {
+	public Map<String, AttributeField> getLDAPAttributesFields() throws Exception {
 		// pega a lista de campos de todas as classes na hierarquia
 		List<Field> classesFields = this.getAllClassesFields(this.getClass());
 		
 		// pega a lista de campos
-		Hashtable<String, Field> fields = new Hashtable<>();
+		Hashtable<String, AttributeField> fields = new Hashtable<>();
 		for (Field field : classesFields)
 		{
 			// se o campo  tiver o annotation
 			if (field.isAnnotationPresent(LDAPAttribute.class))
 			{
-				// pega o annotation
-				LDAPAttribute ldapAttribute = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
-				String fieldName = field.getName();
-				// se o nome do atributo for diferente do nome do campo
-				if (ldapAttribute.name().length() > 0)
-					fieldName = ldapAttribute.name(); 
-				fields.put(fieldName, field);
+				// cria a associação do campo com o atributo
+				AttributeField attrField = new AttributeField(field);
+				// e adiciona na lista
+				fields.put(attrField.getAttributeName(), attrField);
 			}
 		}
 
 		// lança exceção se não tiver atributos a serem coletados
 		if (fields.size() == 0)
-			throw new InvalidParameterException("LDAP Entry has no attributes to be returned");
+			throw new IllegalArgumentException("LDAP Entry has no attributes to be returned");
 		return fields;
 	}
 	
@@ -113,7 +110,7 @@ public abstract class LDAPEntry {
 	public Attributes getLDAPAttributes(AttributeAccessMode attrAccessMode, String... attributesNames) throws Exception {
 		Attributes attributes = new BasicAttributes();
 
-		Map<String, Field> attrFields = this.getLDAPAttributesFields();
+		Map<String, AttributeField> attrFields = this.getLDAPAttributesFields();
 
 		/*
 		 * Serão modificados apenas os atributos que estiverem na lista de
@@ -122,54 +119,50 @@ public abstract class LDAPEntry {
 		 */
 		if (attributesNames.length > 0) {
 			for (String attrName : attributesNames) {
-				Field field = attrFields.get(attrName);
+				AttributeField attrField = attrFields.get(attrName);
 				// ignora o atributo se ele não exisitr na classe
-				if (field == null)
-					continue;
-
-				field.setAccessible(true);
-				// pega a anotação da classe
-				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
-				if (ann == null)
+				if (attrField == null)
 					continue;
 
 				// considera apenas os atributos que possuirem permissão determinada
-				if (!ann.accessMode().haveRequestedPermission(attrAccessMode))
+				if (!attrField.haveRequestedPermission(attrAccessMode))
 					continue;
 
-				LDAPAttributeConverter converter = (LDAPAttributeConverter)
-						ann.attributeConverter().newInstance();
-
 				// adiciona na lista o atributo
-				Attribute attr = converter.getValueAsAttribute(field, this);
-				if (attr != null)
-					attributes.put(attr);
+				List<String> values = attrField.getAsList(this);
+				if (values == null)
+					continue;
+				
+				Attribute attr = new BasicAttribute(attrField.getAttributeName());
+				
+				for (String value : values)
+					attr.add(value);
+				
+				attributes.put(attr);
 			}
 		} else {
 			/*
 			 * Se não forem especificados os atributos que serão modificado,
 			 * então considera que todos eles serão.
 			 */
-			for (Entry<String, Field> attrField : attrFields.entrySet()) {
-				Field field = attrField.getValue();
-				field.setAccessible(true);
-
-				// pega a anotação da classe
-				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
-				if (ann == null)
-					continue;
+			for (Entry<String, AttributeField> entry : attrFields.entrySet()) {
+				AttributeField attrField = entry.getValue();
 
 				// considera apenas os atributos que possuirem permissão determinada
-				if (!ann.accessMode().haveRequestedPermission(attrAccessMode))
+				if (!attrField.haveRequestedPermission(attrAccessMode))
 					continue;
 
-				LDAPAttributeConverter converter = (LDAPAttributeConverter)
-						ann.attributeConverter().newInstance();
-
 				// adiciona na lista o atributo
-				Attribute attr = converter.getValueAsAttribute(field, this);
-				if (attr != null)
-					attributes.put(attr);
+				List<String> values = attrField.getAsList(this);
+				if (values == null)
+					continue;
+				
+				Attribute attr = new BasicAttribute(attrField.getAttributeName());
+				
+				for (String value : values)
+					attr.add(value);
+				
+				attributes.put(attr);
 			}
 		}
 
@@ -194,24 +187,25 @@ public abstract class LDAPEntry {
 		EntryType obj = entryType.newInstance();
 
 		// pega a lista de atributos do LDAP e os campos da classe associados
-		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
-		for (Entry<String, Field> attrField : attrFields.entrySet()) {
+		Map<String, AttributeField> attrFields = obj.getLDAPAttributesFields();
+		for (Entry<String, AttributeField> entry : attrFields.entrySet()) {
 
-			Attribute attr = attributes.get(attrField.getKey());
+			Attribute attr = attributes.get(entry.getKey());
 			if (attr != null)
 			{
-				Field field = attrField.getValue();
-				// pega a anotação informando a classe de conversão do atributo
-				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
+				AttributeField attrField = entry.getValue();
+				
 				// se o atributo estiver habilitado apenas para escrita
-				if (attrAnn.accessMode().equals(AttributeAccessMode.WRITE))
+				if (!attrField.haveRequestedPermission(AttributeAccessMode.READ))
 					// ignora ele
 					continue;
+				
+				// ajusta o valor do campo
+				List<String> values = new ArrayList<>();
+				for (int i = 0; i < attr.size(); i++)
+					values.add(attr.get(i).toString());
 
-				LDAPAttributeConverter parser = (LDAPAttributeConverter) attrAnn.attributeConverter().newInstance();
-
-				// chama a função de conversão
-				parser.parseAttribute(field, obj, attr);				
+				attrField.set(obj, values);		
 			}
 		}
 

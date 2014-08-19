@@ -28,9 +28,8 @@ public @interface LDAPAttribute {
 
 	/**
 	 * Propriedade que indica a classe do objeto que fará a conversão do atributo
-	 * do LDAP para o tipo do campo. O valor padrão é a classe
-	 * {@link LDAPAttributeConverter}, sendo que esta trata os tipos não primitivos
-	 * como <code>String</code>.
+	 * do LDAP para o tipo do campo. A classe a ser ajustada neste campo deverá
+	 * implementar a interface {@link CustomAttributeConverter}.
 	 */
 	Class<?> attributeConverter() default LDAPAttributeConverter.class;
 	

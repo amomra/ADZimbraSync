@@ -1,13 +1,12 @@
 package br.com.luizcarlosvianamelo.adzimbrasync.zimbra;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.AttributeAccessMode;
-import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPAttribute;
+import br.com.luizcarlosvianamelo.adzimbrasync.ldap.AttributeField;
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.LDAPEntry;
 
 import com.zimbra.cs.account.Domain;
@@ -93,24 +92,27 @@ public class ZimbraLDAPMapper {
 		Map<String, Object> mappedAttributes = new Hashtable<>();
 
 		// pega a lista de campos do objeto
-		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
-		for (Entry<String, Field> attrField : attrFields.entrySet()) {
+		Map<String, AttributeField> attrFields = obj.getLDAPAttributesFields();
+		for (Entry<String, AttributeField> entry : attrFields.entrySet()) {
 			/*
 			 * Verifica a qual atributo do LDAP o campo deverá ser associado.
 			 * Caso não tenha sido feita a associação do campo atual com o
 			 * atributo, o mesmo será ignorado.
 			 */
-			String attrName = attrMap.get(attrField.getKey());
+			String attrName = attrMap.get(entry.getKey());
 			if (attrName != null) {
-				Field field = attrField.getValue();
-				LDAPAttribute ann = (LDAPAttribute) field.getAnnotation(LDAPAttribute.class);
+				AttributeField attrField = entry.getValue();
+
 				// ignora os atributos sem permissão
-				if (!ann.accessMode().haveRequestedPermission(attrAccessMode))
+				if (!attrField.haveRequestedPermission(attrAccessMode))
 					continue;
+				
+				/*
+				 * Não se sabe como o Zimbra trata este objetos. Logo, será
+				 * passado o valor bruto do campo.
+				 */
 
-				field.setAccessible(true);
-
-				Object value = field.get(obj);
+				Object value = attrField.getRaw(obj);
 				if (value != null)
 					// faz o mapeamento do atributo com o valor do campo
 					mappedAttributes.put(attrName, value);
@@ -119,7 +121,6 @@ public class ZimbraLDAPMapper {
 
 		return mappedAttributes;
 	}
-
 	/**
 	 * Função que preenche os campos do objeto com os valores dos atributos de
 	 * acordo com o mapeamento.
@@ -133,15 +134,14 @@ public class ZimbraLDAPMapper {
 	void fillAttributesIntoObjectFields(ObjectType obj, Map<String, ? extends Object> attributes,
 			Map<String, String> attrMap) throws Exception {
 		// retorna os campos do objeto
-		Map<String, Field> attrFields = obj.getLDAPAttributesFields();
+		Map<String, AttributeField> attrFields = obj.getLDAPAttributesFields();
 		
-		for (Entry<String, Field> attrField : attrFields.entrySet()) {			
+		for (Entry<String, AttributeField> entry : attrFields.entrySet()) {			
 			// pega o atributo do zimbra ao qual o campo está associado
-			String attributeName = attrMap.get(attrField.getKey());
+			String attributeName = attrMap.get(entry.getKey());
 			// ignora o campo se não existir o mapeamento
 			if (attributeName != null) {
-				Field field = attrField.getValue();
-				field.setAccessible(true);
+				AttributeField attrField = entry.getValue();
 				
 				// pega o valor do atributo
 				Object value = attributes.get(attributeName);
@@ -150,18 +150,15 @@ public class ZimbraLDAPMapper {
 					continue;
 				
 				// ajusta o valor do campo
-				LDAPAttribute attrAnn = field.getAnnotation(LDAPAttribute.class);
-				if (attrAnn == null || !attrAnn.accessMode().haveRequestedPermission(AttributeAccessMode.WRITE))
+				if (!attrField.haveRequestedPermission(AttributeAccessMode.WRITE))
 					/*
 					 * Ignora os valores nulos e se o campo não estiver
 					 * habilitado para escrita
 					 */
 					continue;
 				
-				// TODO Fazer lógica de conversão das informações a serem ajustadas no Zimbra
-				
 				// ajusta o valor
-				field.set(obj, value);
+				attrField.set(obj, value);
 			}
 		}
 	}
