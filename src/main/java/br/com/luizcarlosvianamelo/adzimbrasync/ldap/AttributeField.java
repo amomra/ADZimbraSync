@@ -24,6 +24,7 @@ public class AttributeField {
 	private CustomAttributeConverter converter;
 	private String attributeName;
 	private AttributeAccessMode attributeAccessMode;
+	private boolean useRawValue;
 
 	/**
 	 * Construtor da classe. Este faz a associação do atributo do LDAP ao campo
@@ -55,6 +56,7 @@ public class AttributeField {
 			this.attributeName = this.field.getName();
 
 		this.attributeAccessMode = ann.accessMode();
+		this.useRawValue = ann.raw();
 
 		this.converter = null;
 
@@ -80,6 +82,13 @@ public class AttributeField {
 	 */
 	public String getAttributeName() {
 		return attributeName;
+	}
+	
+	/**
+	 * Informa se deverá ser utilizado o valor bruto do atributo.
+	 */
+	public boolean useRawValue() {
+		return this.useRawValue;
 	}
 
 	/**
@@ -213,22 +222,22 @@ public class AttributeField {
 	public void set(Object obj, Object value) throws Exception {
 		List<String> values = new ArrayList<>();
 		
-		Class<?> objType = obj.getClass();
+		Class<?> valueType = value.getClass();
 		
 		// verifica se o objeto é um vetor
-		if (objType.isArray()) {
+		if (valueType.isArray()) {
 			// preenche a lista
-			int arraySize = Array.getLength(obj);
+			int arraySize = Array.getLength(value);
 			for (int i = 0; i < arraySize; i++)
-				values.add(Array.get(obj, i).toString());
+				values.add(Array.get(value, i).toString());
 		}
 		// se for uma lista
-		else if (Iterable.class.isAssignableFrom(objType)) {
-			Iterable<?> list = (Iterable<?>) obj;
+		else if (Iterable.class.isAssignableFrom(valueType)) {
+			Iterable<?> list = (Iterable<?>) value;
 			for (Object val : list)
 				values.add(val.toString());
 		} else
-			values.add(obj.toString());
+			values.add(value.toString());
 		// ajusta o valor do campo
 		this.set(obj, values);
 	}

@@ -128,15 +128,26 @@ public abstract class LDAPEntry {
 				if (!attrField.haveRequestedPermission(attrAccessMode))
 					continue;
 
-				// adiciona na lista o atributo
-				List<String> values = attrField.getAsList(this);
-				if (values == null)
-					continue;
-				
 				Attribute attr = new BasicAttribute(attrField.getAttributeName());
 				
-				for (String value : values)
+				// se o atributo deve ser lido sem a conversão
+				if (attrField.useRawValue()) {
+					Object value = attrField.getRaw(this);
+					if (value == null)
+						continue;
+					
+					// adiciona o valor
 					attr.add(value);
+				} else {
+
+					// adiciona na lista o atributo
+					List<String> values = attrField.getAsList(this);
+					if (values == null)
+						continue;
+
+					for (String value : values)
+						attr.add(value);
+				}
 				
 				attributes.put(attr);
 			}
@@ -152,16 +163,27 @@ public abstract class LDAPEntry {
 				if (!attrField.haveRequestedPermission(attrAccessMode))
 					continue;
 
-				// adiciona na lista o atributo
-				List<String> values = attrField.getAsList(this);
-				if (values == null)
-					continue;
-				
 				Attribute attr = new BasicAttribute(attrField.getAttributeName());
-				
-				for (String value : values)
+
+				// se o atributo deve ser lido sem a conversão
+				if (attrField.useRawValue()) {
+					Object value = attrField.getRaw(this);
+					if (value == null)
+						continue;
+
+					// adiciona o valor
 					attr.add(value);
-				
+				} else {
+
+					// adiciona na lista o atributo
+					List<String> values = attrField.getAsList(this);
+					if (values == null)
+						continue;
+
+					for (String value : values)
+						attr.add(value);
+				}
+
 				attributes.put(attr);
 			}
 		}

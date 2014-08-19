@@ -2,10 +2,6 @@ package br.com.luizcarlosvianamelo.adzimbrasync.ad;
 
 import java.util.List;
 
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
-
 import br.com.luizcarlosvianamelo.adzimbrasync.ldap.DN;
 
 /**
@@ -177,19 +173,11 @@ public class ADUsersRepository {
 	 * @throws Exception Lança uma exceção caso não for possível alterar a senha.
 	 */
 	public void changeUserPassword(ADUser user, String newPassword) throws Exception {
-		/*
-		 * A senha deverá ser codificada em UTF-16 e entre aspas para que ela
-		 * seja alterada no servidor.
-		 */
-		String quotedPassword = String.format("\"%s\"", newPassword);
-		
-		// codifica para UTF-16
-		byte[] encodedPassword = quotedPassword.getBytes("UTF-16LE");
+		// ajusta a senha
+		user.setPassword(newPassword);
 		
 		// ajusta a senha
-		this.adTree.modify(user.getDistinguishedName(),
-				new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-						new BasicAttribute("unicodePwd", encodedPassword)));
+		this.adTree.modify(user.getDistinguishedName(), user, "unicodePwd");
 	}
 	
 	/**

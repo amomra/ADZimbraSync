@@ -54,6 +54,10 @@ public class ADAttributeManager extends AttributeManager {
 		Account acct = (Account) entry;
 
 		try {
+			// TODO Adicionar uma lógica para não se conectar nos domínios que não estiverem habilitados para provisionamento
+			
+			// TODO Adicionar lógica para verificar se os atributos modificados estão mapeados para evitar conexões desnecessárias
+			
 			ADProvisioning prov = (ADProvisioning) Provisioning.getInstance();
 			
 			// pega o domínio da conta

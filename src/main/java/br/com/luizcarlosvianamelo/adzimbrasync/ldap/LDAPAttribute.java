@@ -38,4 +38,10 @@ public @interface LDAPAttribute {
 	 * o atributo possui permissão de leitura e escrita.
 	 */
 	AttributeAccessMode accessMode() default AttributeAccessMode.READ_WRITE;
+	
+	/**
+	 * Propriedade que define se o atributo deverá ser lido como um valor bruto,
+	 * ou seja, sem que seja realizada a conversão do mesmo.
+	 */
+	boolean raw() default false;
 }
