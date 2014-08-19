@@ -22,11 +22,27 @@ import javax.naming.directory.BasicAttributes;
  *
  */
 public abstract class LDAPEntry {
-	
+
+	protected DN dn;
+
 	/**
 	 * Construtor da classe.
 	 */
 	public LDAPEntry() {
+	}
+
+	/**
+	 * Retorna o DN da entrada.
+	 */
+	public DN getDn() {
+		return dn;
+	}
+
+	/**
+	 * Ajusta o DN da entrada.
+	 */
+	public void setDn(DN dn) {
+		this.dn = dn;
 	}
 
 	/**
@@ -42,25 +58,25 @@ public abstract class LDAPEntry {
 		 * pai é necessário fazer uma função que percorra toda hierarquia de
 		 * classes e coletar os campos de cada uma delas.
 		 */
-		
+
 		// a condição de parada da recursão será quando a busca alcançar esta
 		// classe
 		if (clazz != LDAPEntry.class) {
 			// faz a chamada recursiva para a classe pai da classe atual
 			// para retornar a lista preenchida até o momento
 			List<Field> fields = this.getAllClassesFields(clazz.getSuperclass());
-			
+
 			// e preenche a lista com os campos da classe atual
 			fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-			
+
 			return fields;
 		}
-		
+
 		// retorna a lista vazia já que esta classe não tem atributos do LDAP
 		// a serem coletados
 		return new ArrayList<>();
 	}
-	
+
 	/**
 	 * Retorna a lista de atributos do LDAP com os campos associados da classe.
 	 * Esta lista é montada a partir da lista de campos anotados com a anotação
@@ -72,7 +88,7 @@ public abstract class LDAPEntry {
 	public Map<String, AttributeField> getLDAPAttributesFields() throws Exception {
 		// pega a lista de campos de todas as classes na hierarquia
 		List<Field> classesFields = this.getAllClassesFields(this.getClass());
-		
+
 		// pega a lista de campos
 		Hashtable<String, AttributeField> fields = new Hashtable<>();
 		for (Field field : classesFields)
@@ -92,7 +108,7 @@ public abstract class LDAPEntry {
 			throw new IllegalArgumentException("LDAP Entry has no attributes to be returned");
 		return fields;
 	}
-	
+
 	/**
 	 * Função que retorna a lista de atributos do LDAP contidos no objeto
 	 * passado.
@@ -129,13 +145,13 @@ public abstract class LDAPEntry {
 					continue;
 
 				Attribute attr = new BasicAttribute(attrField.getAttributeName());
-				
+
 				// se o atributo deve ser lido sem a conversão
 				if (attrField.useRawValue()) {
 					Object value = attrField.getRaw(this);
 					if (value == null)
 						continue;
-					
+
 					// adiciona o valor
 					attr.add(value);
 				} else {
@@ -148,7 +164,7 @@ public abstract class LDAPEntry {
 					for (String value : values)
 						attr.add(value);
 				}
-				
+
 				attributes.put(attr);
 			}
 		} else {
@@ -216,12 +232,12 @@ public abstract class LDAPEntry {
 			if (attr != null)
 			{
 				AttributeField attrField = entry.getValue();
-				
+
 				// se o atributo estiver habilitado apenas para escrita
 				if (!attrField.haveRequestedPermission(AttributeAccessMode.READ))
 					// ignora ele
 					continue;
-				
+
 				// ajusta o valor do campo
 				List<String> values = new ArrayList<>();
 				for (int i = 0; i < attr.size(); i++)

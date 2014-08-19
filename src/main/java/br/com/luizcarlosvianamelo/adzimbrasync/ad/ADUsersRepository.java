@@ -177,7 +177,7 @@ public class ADUsersRepository {
 		user.setPassword(newPassword);
 		
 		// ajusta a senha
-		this.adTree.modify(user.getDistinguishedName(), user, "unicodePwd");
+		this.adTree.modify(user, "unicodePwd");
 	}
 	
 	/**
@@ -193,6 +193,6 @@ public class ADUsersRepository {
 	 */
 	public void modifyUser(ADUser user) throws Exception {
 		// faz a chamada para modificação
-		this.adTree.modify(user.getDistinguishedName(), user);
+		this.adTree.modify(user);
 	}
 }

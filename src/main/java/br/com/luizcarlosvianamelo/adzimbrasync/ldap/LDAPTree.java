@@ -259,6 +259,10 @@ public class LDAPTree {
 			SearchResult entry = result.nextElement();
 
 			ObjectType ldapEntry = LDAPEntry.parseEntry(objType, entry.getAttributes());
+			
+			// ajusta o DN da entrada
+			ldapEntry.setDn(DN.parse(entry.getNameInNamespace()));
+			
 			// adiciona na lista
 			ldapEntries.add(ldapEntry);
 		}
@@ -303,15 +307,19 @@ public class LDAPTree {
 	/**
 	 * Função que modifica os valores dos atributos de uma entrada do LDAP com
 	 * base no objeto Java.
-	 * @param dn O DN da entrada do LDAP que será modificado.
 	 * @param obj O objeto que contém os atributos a serem modificados.
 	 * @param attrsToBeModified A lista de atributos da entrada que serão
 	 * modificados.
 	 * @throws Exception Lança uma exceção quando não for possível realizar a
 	 * alteração.
 	 */
-	public <ObjectType extends LDAPEntry> void modify(DN dn, ObjectType obj, String... attrsToBeModified)
+	public <ObjectType extends LDAPEntry> void modify(ObjectType obj, String... attrsToBeModified)
 			throws Exception {
+		DN dn = obj.getDn();
+		// se o DN não for válido
+		if (dn == null)
+			throw new IllegalArgumentException("Invalid DN value");
+		
 		// pega a lista de atributos que serão modificados
 		Attributes attrs = obj.getLDAPAttributes(AttributeAccessMode.WRITE, attrsToBeModified);
 		// se a lista não estiver vazia
