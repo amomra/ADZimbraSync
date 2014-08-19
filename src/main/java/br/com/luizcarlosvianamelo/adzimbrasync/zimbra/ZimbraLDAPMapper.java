@@ -22,10 +22,26 @@ public class ZimbraLDAPMapper {
 	@SuppressWarnings("serial")
 	private static final Map<String, String> DEFAULT_ZIMBRA_AD_USER_ATTR_MAP = new HashMap<String, String>() {{
 		put("cn", "cn");
-		put("name", "displayName");
 		put("givenName", "givenName");
+		put("initials", "initials");
 		put("sn", "sn");
+		put("displayName", "displayName");
 		put("distinguishedName", "zimbraAuthLdapExternalDn");
+		put("displayName", "displayName");
+		put("description", "description");
+		put("info", "zimbraNotes");
+		put("telephoneNumber", "telephoneNumber");
+		put("homePhone", "homePhone");
+		put("mobile", "mobile");
+		put("pager", "pager");
+		put("facsimileTelephoneNumber", "facsimileTelephoneNumber");
+		put("streetAddress", "street");
+		put("l", "l");
+		put("st", "st");
+		put("postalCode", "postalCode");
+		put("co", "co");
+		put("company", "company");
+		put("title", "title");		
 	}};
 
 	@SuppressWarnings("serial")

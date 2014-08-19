@@ -85,7 +85,7 @@ public class ZimbraLDAPMapperTest {
 		
 		// verifica se o objeto foi preenchido
 		assertEquals("O campo \"givenName\" não foi ajustado corretamente" , "teste", user.getGivenName());
-		assertEquals("O campo \"sn\" não foi ajustado corretamente" , "teste2", user.getSn());
+		assertEquals("O campo \"sn\" não foi ajustado corretamente" , "teste2", user.getSurname());
 		
 	}
 }
