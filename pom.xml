@@ -34,6 +34,13 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/zimbracommon.jar</systemPath>
 		</dependency>
+        <dependency>
+            <groupId>com.zimbra</groupId>
+            <artifactId>zimbraclient</artifactId>
+            <version>8.0.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/zimbraclient.jar</systemPath>
+        </dependency>
 		<dependency>
 			<groupId>com.zimbra</groupId>
 			<artifactId>zimbrastore</artifactId>
