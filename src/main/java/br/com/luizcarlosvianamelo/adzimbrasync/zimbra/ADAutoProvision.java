@@ -52,7 +52,10 @@ public class ADAutoProvision {
 		Map<String, Object> attrValues = ZimbraLDAPMapper.mapObjectFieldsIntoAttributes(user,
 				AttributeAccessMode.READ, attrMap);
 		
-		// TODO Checar se a conta está ativa
+		/*
+		 * Não precisa fazer a checagem se a conta está desabilitada pois o
+		 * Zimbra já impede o login neste caso.
+		 */
 		attrValues.put(Provisioning.A_zimbraMailStatus, Provisioning.MAIL_STATUS_ENABLED);
 		
 		/*

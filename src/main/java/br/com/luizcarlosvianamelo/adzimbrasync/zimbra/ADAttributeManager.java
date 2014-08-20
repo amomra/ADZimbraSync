@@ -30,6 +30,24 @@ public class ADAttributeManager extends AttributeManager {
 	public ADAttributeManager(String dir) throws ServiceException {
 		super(dir);
 	}
+	
+	/**
+	 * Função que verifica se os atributos a serem modificados no Zimbra estão
+	 * mapeados para o AD.
+	 * @param attrMap O mapeamento dos atributos do AD com os atributos do
+	 * Zimbra.
+	 * @param attrs Os atributos a serem modificados.
+	 * @return Retorna <code>true</code> caso um atributo que estiver sendo
+	 * modificado estiver mapeado. Caso contrário, retorna <code>false</code>.
+	 */
+	private static boolean haveAttributesToBeModified(Map<String, String> attrMap, Map<String, ? extends Object> attrs) {
+		for (java.util.Map.Entry<String, String> entry : attrMap.entrySet()) {
+			// caso o atributo mapeado do AD for modificado no Zimbra
+			if (attrs.containsKey(entry.getValue()))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Função chamada após a modificação dos atributos de uma entrada no Zimbra.
@@ -42,6 +60,7 @@ public class ADAttributeManager extends AttributeManager {
 	 * @param context O contexto da chamada.
 	 * @param allowCallback Indica se a chamada é permitida.
 	 */
+	@Override
 	public void postModify(Map<String, ? extends Object> attrs,
             Entry entry, CallbackContext context, boolean allowCallback) {
 		// faz o pós-processamento padrão
@@ -56,12 +75,16 @@ public class ADAttributeManager extends AttributeManager {
 		try {
 			// TODO Adicionar uma lógica para não se conectar nos domínios que não estiverem habilitados para provisionamento
 			
-			// TODO Adicionar lógica para verificar se os atributos modificados estão mapeados para evitar conexões desnecessárias
-			
 			ADProvisioning prov = (ADProvisioning) Provisioning.getInstance();
 			
 			// pega o domínio da conta
 			Domain domain = prov.getDomain(acct);
+			
+			// verifica se há atributos para serem modificados antes de abrir a conexão
+			Map<String, String> attrMap = ZimbraLDAPMapper.getUserAttributeMapping(domain);
+			if (!haveAttributesToBeModified(attrMap, attrs))
+				// finaliza a função já que não há atributos mapeados para serem modificados
+				return;
 
 			// busca o usuário no AD
 			ADTree adTree = ADConnectionManager.openDomainADConnection(domain);
@@ -78,8 +101,7 @@ public class ADAttributeManager extends AttributeManager {
 			}
 			
 			// preenche os atributos a serem modificados
-			ZimbraLDAPMapper.fillAttributesIntoObjectFields(user, attrs,
-					ZimbraLDAPMapper.getUserAttributeMapping(domain));
+			ZimbraLDAPMapper.fillAttributesIntoObjectFields(user, attrs, attrMap);
 			
 			// modifica o usuário
 			rep.modifyUser(user);

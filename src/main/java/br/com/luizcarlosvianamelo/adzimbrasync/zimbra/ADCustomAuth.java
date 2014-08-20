@@ -45,12 +45,12 @@ public class ADCustomAuth extends ZimbraCustomAuth {
 		 * que será lançada pela função.
 		 */
 		Throwable cause = ex.getCause(); 
-		// verifica se é uma exceção do LDAP e se tem a mensagem tem o código de mudança de senha
-		if (cause != null &&
-				cause instanceof LdapException &&
-				cause.getMessage().contains("NT_STATUS_PASSWORD_MUST_CHANGE")) {
-			// marca o usuário para mudança de senha
-			acct.setPasswordMustChange(true);
+		// verifica se é uma exceção do LDAP e 
+		if (cause != null && cause instanceof LdapException) {
+			//se tem a mensagem tem o código de mudança de senha
+			if (cause.getMessage().contains("NT_STATUS_PASSWORD_MUST_CHANGE"))
+				// marca o usuário para mudança de senha
+				acct.setPasswordMustChange(true);
 		}
 		else
 			// caso não tenha sido lançada outra exceção, então relança a exceção atual.
