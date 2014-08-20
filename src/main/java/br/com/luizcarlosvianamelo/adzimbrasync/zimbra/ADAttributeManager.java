@@ -72,9 +72,7 @@ public class ADAttributeManager extends AttributeManager {
 
 		Account acct = (Account) entry;
 
-		try {
-			// TODO Adicionar uma lógica para não se conectar nos domínios que não estiverem habilitados para provisionamento
-			
+		try {			
 			ADProvisioning prov = (ADProvisioning) Provisioning.getInstance();
 			
 			// pega o domínio da conta
@@ -89,7 +87,11 @@ public class ADAttributeManager extends AttributeManager {
 			// busca o usuário no AD
 			ADTree adTree = ADConnectionManager.openDomainADConnection(domain);
 			if (adTree == null) {
-				ZimbraLog.account.error(String.format("AD - Can't connect AD to modify user \"%s\"", acct.getUid()));
+				/*
+				 * Se não abrir a conexão é porque o domínio não está habilitado
+				 * para provisionamento. Para os problemas de conexão são
+				 * lançadas exceções.
+				 */
 				return;
 			}
 			

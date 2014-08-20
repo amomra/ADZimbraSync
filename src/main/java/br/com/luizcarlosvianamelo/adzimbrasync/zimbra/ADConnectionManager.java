@@ -27,6 +27,16 @@ public class ADConnectionManager {
 		String adBindDn = domain.getAutoProvLdapAdminBindDn();
 		String adBindPassword = domain.getAutoProvLdapAdminBindPassword();
 		String adSearchBase = domain.getAutoProvLdapSearchBase();
+		
+		/*
+		 * Se estes atributos não estiverem ajustados, então não realiza a
+		 * conexão. 
+		 */
+		if (adURL == null || adURL.equals("") ||
+				adBindDn == null || adBindDn.equals("") ||
+				adBindPassword == null || adBindPassword.equals("") ||
+				adSearchBase == null || adSearchBase.equals(""))
+			return null;
 
 		ZimbraLog.autoprov.debug("AD - Connecting to AD - Url: %s | BindDn: %s | BindPassword: %s | " +
 				"SearchBase: %s", adURL, adBindDn, adBindPassword, adSearchBase);
