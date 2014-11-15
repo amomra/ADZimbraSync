@@ -60,9 +60,9 @@ public class ADAutoProvision {
 		
 		/*
 		 * Verifica se a conta já está cadastrada no Zimbra. Caso não estiver,
-		 * cria ela.
+		 * cria ela. A função abaixo usa o e-mail para fazer a busca.
 		 */
-		Account acct = this.prov.getAccountByName(user.getsAMAccountName());
+		Account acct = this.prov.getAccountByName(user.getMail());
 		if (acct != null) {
 			/*
 			 * Atualiza apenas se o horário da última modificação no AD for
@@ -75,9 +75,11 @@ public class ADAutoProvision {
 				acct.modify(attrValues);
 			} else
 				ZimbraLog.autoprov.debug("AD - No modification is needed for account \"%s\"", user.getDistinguishedName());
-		} else
-			// significa que ela não foi encontrada. Logo, cria ela no Zimbra
-			acct = this.prov.createAccount(user.getMail(), "AUTOPROVISIONED", attrValues);
+		} else {
+            ZimbraLog.autoprov.info("AD - Creating new Accout for e-mail \"%s\"", user.getMail());
+            // significa que ela não foi encontrada. Logo, cria ela no Zimbra
+            acct = this.prov.createAccount(user.getMail(), "AUTOPROVISIONED", attrValues);
+        }
 
 		return acct;
 	}
@@ -89,7 +91,7 @@ public class ADAutoProvision {
 	 * no Zimbra, ela será criada.
 	 * @param domain O domínio da conta.
 	 * @param distributionList O objeto da lista lido do AD.
-	 * @param groupUsers
+	 * @param groupUsers Lista de usuários pertecentes ao grupo.
 	 * @return Retorna o objeto do tipo {@link DistributionList} representando a
 	 * lista de distribuição no Zimbra.
 	 * @throws Exception Lança exceção quando não for possível atualizar ou
